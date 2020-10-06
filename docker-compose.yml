@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+    flask:
+        build: .
+        container_name: flask_app
+        image: flask_app
+        ports:
+            - 5000:5000
+        restart: always
+        environment:
+            FLASK_APP: app.py
+            FLASK_ENV: development
+            FLASK_RUN_HOST: 0.0.0.0
+        volumes:
+            - .:/app
+        networks:
+            redis_flask_app:
+        command: [ "python", "-m", "flask", "run" ]
+
+    redis:
+        image: redis:alpine
+        container_name: redis_cache
+        networks:
+            redis_flask_app:
+                aliases:
+                    - redis
+#         volumes:
+#             - redis-cache:/var/lib/redis/data
+
+# volumes:
+#     redis-cache:
+
+networks:
+    redis_flask_app:
+        driver: bridge
