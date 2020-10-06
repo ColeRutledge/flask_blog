@@ -1,0 +1,10 @@
+extends base.pug
+
+block content
+    h1 Sign In
+    form(action='' method='post' novalidate)
+        p= form.hidden_tag()
+        p #{form.username.label} #[strong #{form.username(size=32)}]
+        p #{form.password.label} #[strong #{form.password(size=32)}]
+        p #{form.remember_me()} #{form.remember_me.label}
+        p #{form.submit()}

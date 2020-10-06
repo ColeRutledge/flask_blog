@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        if title
-            title #{title} - Microblog
-        else
-            title Welcome to Microblog
-    body
-        //- h1 Hello World! I have been seen #{count} times.
-        h1 Hello, #{user.username}!
+extends base.pug
+block content
+    //- h1 Hello World! I have been seen #{count} times.
+    h1 Hello, #{user.username}!
+    each post in posts
+        div: p #{post.author.username} says: #[strong #{post.body}]
