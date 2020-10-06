@@ -1,10 +1,12 @@
+from flask import Flask, render_template
+import redis
 import time
 
-import redis
-from flask import Flask
 
 app = Flask(__name__)
-cache = redis.Redis(host='redis_cache', port=6379)
+cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
+app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
+
 
 def get_hit_count():
     retries = 5
@@ -17,7 +19,8 @@ def get_hit_count():
             retries -= 1
             time.sleep(0.5)
 
+
 @app.route('/')
 def hello():
     count = get_hit_count()
-    return 'FINALLY!! Hello World! I have been seen {} times.\n'.format(count)
+    return render_template('index.pug', count=count)

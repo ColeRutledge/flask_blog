@@ -8,6 +8,7 @@ authors = ["Cole Rutledge <ColeRutledge@gmail.com>"]
 python = "^3.8"
 Flask = "^1.1.2"
 redis = "^3.5.3"
+pypugjs = "^5.9.4"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"
