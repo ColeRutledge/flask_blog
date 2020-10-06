@@ -15,7 +15,7 @@ services:
             - .:/app
         networks:
             redis_flask_app:
-        command: [ "python", "-m", "flask", "run" ]
+        command: python -m flask run
 
     redis:
         image: redis:alpine
