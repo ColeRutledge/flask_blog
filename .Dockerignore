@@ -1,6 +1,7 @@
 .venv
 poetry.lock
 pyproject.toml
+sqlite_queries.sql
 
 **/__pycache__
 **/.classpath

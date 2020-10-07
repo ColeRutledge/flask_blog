@@ -1,4 +1,6 @@
-from flask import Flask, render_template, flash, redirect
+from flask import Flask, render_template, flash, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from datetime import datetime
 import re
 
@@ -10,8 +12,18 @@ from forms import LoginForm
 
 app = Flask(__name__)
 app.config.from_object(Config)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
+
+from models import User, Post # noqa
+
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'User': User, 'Post': Post}
+
 
 # def get_hit_count():
 #     retries = 5
@@ -57,7 +69,7 @@ def hello_there(name):
     match_object = re.match("[a-zA-Z]+", name)
 
     if match_object:
-        clean_name = match_object.group(0)
+        clean_name = match_object.group()
     else:
         clean_name = "Friend"
 
@@ -73,5 +85,5 @@ def login():
             f'Login requested for user {form.username.data}, \
             remember_me={form.remember_me.data}'
         )
-        return redirect('/index')
+        return redirect(url_for('index'))
     return render_template('login.pug', title='Sign In', form=form)

@@ -9,8 +9,8 @@ html(lang="en")
             title Welcome to Microblog
     body
         div Microblog:
-            a(href='/index') Home
-            a(href='/login') Login
+            a(href=url_for('index')) Home
+            a(href=url_for('login')) Login
         hr
         messages = get_flashed_messages()
         if messages
