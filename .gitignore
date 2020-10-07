@@ -128,5 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# sqlite query
+# sqlite db
 sqlite_queries.sql
+app.db

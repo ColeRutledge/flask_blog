@@ -22,6 +22,10 @@ from models import User, Post # noqa
 
 @app.shell_context_processor
 def make_shell_context():
+    '''
+    Decorator that gives access to the flask env context by
+    running 'flask shell' from inside the venv command line
+    '''
     return {'db': db, 'User': User, 'Post': Post}
 
 
