@@ -1,5 +1,5 @@
 {
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
-    "sqlite.logLevel": "DEBUG",
+    "sqlite.logLevel": "INFO",
 }

@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # sqlite db
-sqlite_queries.sql
 app.db
+-- SQLite.sql

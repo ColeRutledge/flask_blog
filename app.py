@@ -6,12 +6,14 @@ import re
 
 from config import Config
 from forms import LoginForm
+from db import sqlite
 # import redis
 # import time
 
 
 app = Flask(__name__)
 app.config.from_object(Config)
+sqlite()
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
@@ -23,28 +25,10 @@ from models import User, Post # noqa
 @app.shell_context_processor
 def make_shell_context():
     '''
-    Decorator that gives access to the flask env context by
+    decorator that gives access to the flask env context by
     running 'flask shell' from inside the venv command line
     '''
     return {'db': db, 'User': User, 'Post': Post}
-
-
-# def get_hit_count():
-#     retries = 5
-#     while True:
-#         try:
-#             return cache.incr('hits')
-#         except redis.exceptions.ConnectionError as exc:
-#             if retries == 0:
-#                 raise exc
-#             retries -= 1
-#             time.sleep(0.5)
-
-
-# @app.route('/')
-# def hello():
-#     count = get_hit_count()
-#     return render_template('index.pug')
 
 
 @app.route('/')
@@ -91,3 +75,23 @@ def login():
         )
         return redirect(url_for('index'))
     return render_template('login.pug', title='Sign In', form=form)
+
+
+# ######### REDIS ######### #
+
+# def get_hit_count():
+#     retries = 5
+#     while True:
+#         try:
+#             return cache.incr('hits')
+#         except redis.exceptions.ConnectionError as exc:
+#             if retries == 0:
+#                 raise exc
+#             retries -= 1
+#             time.sleep(0.5)
+
+
+# @app.route('/')
+# def hello():
+#     count = get_hit_count()
+#     return render_template('index.pug')
