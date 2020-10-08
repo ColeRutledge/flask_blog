@@ -1,9 +1,22 @@
-from flask import Flask, render_template, flash, redirect, url_for
+from werkzeug.urls import url_parse
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
 import re
-
+from flask import (
+    Flask,
+    render_template,
+    flash, redirect,
+    url_for,
+    request
+)
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_user,
+    logout_user,
+    login_required,
+)
 from config import Config
 from forms import LoginForm
 # import redis
@@ -13,6 +26,8 @@ from forms import LoginForm
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
+login = LoginManager(app)
+login.login_view = 'login'
 migrate = Migrate(app, db)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
@@ -31,8 +46,8 @@ def make_shell_context():
 
 @app.route('/')
 @app.route('/index')
+@login_required
 def index():
-    user = {'username': 'Cole'}
     posts = [
         {
             'author': {'username': 'John'},
@@ -43,7 +58,7 @@ def index():
             'body': 'The Avengers movie was so cool!'
         },
     ]
-    return render_template('index.pug', user=user, title='Home', posts=posts)
+    return render_template('index.pug', title='Home Page', posts=posts)
 
 
 @app.route("/hello/<name>")
@@ -65,14 +80,31 @@ def hello_there(name):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     form = LoginForm()
     if form.validate_on_submit():
-        flash(
-            f'Login requested for user {form.username.data}, \
-            remember_me={form.remember_me.data}'
-        )
+
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+
+        # for security only redirect when url is relative
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+
         return redirect(url_for('index'))
     return render_template('login.pug', title='Sign In', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 
 # ######### REDIS ######### #

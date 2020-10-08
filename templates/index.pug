@@ -1,6 +1,6 @@
 extends base.pug
 block content
     //- h1 Hello World! I have been seen #{count} times.
-    h1 Hello, #{user.username}!
-    each post in posts
+    h1 Hello, #{current_user.username}!
+    for post in posts
         div: p #{post.author.username} says: #[strong #{post.body}]

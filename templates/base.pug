@@ -10,7 +10,10 @@ html(lang="en")
     body
         div Microblog:
             a(href=url_for('index')) Home
-            a(href=url_for('login')) Login
+            if current_user.is_anonymous
+                a(href=url_for('login')) Login
+            else
+                a(href=url_for('logout')) Logout
         hr
         messages = get_flashed_messages()
         if messages
