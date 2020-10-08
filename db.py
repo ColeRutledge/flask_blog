@@ -6,8 +6,8 @@ def create_connection(db_file):
     ''' create a database connection to a SQLite database '''
     conn = None
     try:
-        conn = sqlite3.connect(db_file)
-        # conn = sqlite3.connect(':memory')
+        conn = sqlite3.connect(db_file)         # create db in file
+        # conn = sqlite3.connect(':memory')     # create db in memory
         # print(f'sqlite v.{sqlite3.version}')
     except Error as e:
         print(e)
@@ -55,12 +55,35 @@ def sqlite():
     conn = create_connection(database)
 
     if conn is not None:
-        create_table(conn, sql_create_projects_table)
-        create_table(conn, sql_create_tasks_table)
-        create_project_task()
-        update_task_record()
-        delete_the_tasks()
-        select_the_tasks()
+        with conn:
+
+            # CREATE
+            create_table(conn, sql_create_projects_table)
+            create_table(conn, sql_create_tasks_table)
+            project = ('Cool App with SQLite & Python', '2015-01-01', '2015-01-30') # noqa
+            project_id = create_project(conn, project)
+            task_1 = ('Analyze the requirements of the app',
+                   1, 1, project_id, '2015-01-01', '2015-01-02') # noqa
+            task_2 = ('Confirm with user about the top requirements',
+                    1, 1, project_id, '2015-01-03', '2015-01-05') # noqa
+            create_task(conn, task_1)
+            create_task(conn, task_2)
+
+            # READ
+            print('1. Query task by priority:')
+            select_task_by_priority(conn, 1)
+            print('2. Query all tasks')
+            select_all_tasks(conn)
+
+            # UPDATE
+            update_task(conn, (2, '2015-01-04', '2015-01-06', 2))
+
+            # DELETE
+            # delete_task(conn, 2)
+            delete_all_tasks(conn)
+            delete_all_projects(conn)
+            drop_table(conn, 'tasks')
+            drop_table(conn, 'projects')
     else:
         print('Error! cannot create the database connection.')
 
@@ -100,24 +123,6 @@ def create_task(conn, task):
     return cur.lastrowid
 
 
-def create_project_task():
-    database = r'app.db'
-    conn = create_connection(database)
-
-    with conn:
-        project = ('Cool App with SQLite & Python', '2015-01-01', '2015-01-30')
-        project_id = create_project(conn, project)
-
-        task_1 = ('Analyze the requirements of the app',
-                   1, 1, project_id, '2015-01-01', '2015-01-02') # noqa
-
-        task_2 = ('Confirm with user about the top requirements',
-                    1, 1, project_id, '2015-01-03', '2015-01-05') # noqa
-
-        create_task(conn, task_1)
-        create_task(conn, task_2)
-
-
 def update_task(conn, task):
     '''
     Update priority, begin_date, and end date of a task
@@ -138,13 +143,6 @@ def update_task(conn, task):
     cur.execute(sql, task)
     conn.commit()
     return cur.lastrowid
-
-
-def update_task_record():
-    database = r'app.db'
-    conn = create_connection(database)
-    with conn:
-        update_task(conn, (2, '2015-01-04', '2015-01-06', 2))
 
 
 def delete_task(conn, id):
@@ -176,12 +174,26 @@ def delete_all_tasks(conn):
     conn.commit()
 
 
-def delete_the_tasks():
-    database = r'app.db'
-    conn = create_connection(database)
-    with conn:
-        delete_task(conn, 2)
-        # delete_all_tasks(conn)
+def delete_all_projects(conn):
+    '''
+    Delete all rows in the projects table
+    :param conn: Connection to the SQLite database
+    :return:
+    '''
+
+    sql = 'DELETE FROM projects'
+
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
+
+
+def drop_table(conn, table):
+    sql = f'DROP table {table}'
+
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
 
 
 def select_all_tasks(conn):
@@ -215,14 +227,3 @@ def select_task_by_priority(conn, priority):
 
     for row in rows:
         print(row)
-
-
-def select_the_tasks():
-    database = r'app.db'
-    conn = create_connection(database)
-    with conn:
-        print('1. Query task by priority:')
-        select_task_by_priority(conn, 1)
-
-        print('2. Query all tasks')
-        select_all_tasks(conn)

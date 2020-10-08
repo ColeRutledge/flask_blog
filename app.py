@@ -6,14 +6,12 @@ import re
 
 from config import Config
 from forms import LoginForm
-from db import sqlite
 # import redis
 # import time
 
 
 app = Flask(__name__)
 app.config.from_object(Config)
-sqlite()
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
