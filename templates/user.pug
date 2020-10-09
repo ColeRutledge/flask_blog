@@ -3,10 +3,14 @@ block content
     table
         tr(valign='top')
             td: img(src=user.avatar(128))
-            td: h1 User: #{user.username}
+            td
+                h1 User: #{user.username}
+                if user.about_me
+                    p= user.about_me
+                if user.last_seen
+                    p= user.last_seen
+                if user == current_user
+                    p: a(href=url_for('edit_profile')) Edit your profile
     hr
     for post in posts
-        table
-            tr(valign='top')
-                td: img(src=user.avatar(36))
-                td #{post.author.username} says: #[br] #{post.body}
+        include _post.pug

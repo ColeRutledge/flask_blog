@@ -131,3 +131,6 @@ dmypy.json
 # sqlite db
 app.db
 -- SQLite.sql
+
+# logs
+logs/

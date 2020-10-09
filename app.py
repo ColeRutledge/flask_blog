@@ -2,7 +2,10 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.urls import url_parse
 from flask_migrate import Migrate
 from datetime import datetime
+from logging.handlers import SMTPHandler, RotatingFileHandler
+import logging
 import re
+import os
 from flask import (
     Flask,
     render_template,
@@ -31,8 +34,48 @@ login.login_view = 'login'
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
 
-from forms import LoginForm, RegistrationForm # noqa
+from forms import LoginForm, RegistrationForm, EditProfileForm # noqa
 from models import User, Post # noqa
+import errors # noqa
+
+
+if not app.debug:
+    # configures email notifications on server issues
+    if app.config['MAIL_SERVER']:
+
+        auth = None
+        if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
+            auth = (app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+
+        secure = None
+        if app.config['MAIL_USE_TLS']:
+            secure = ()
+
+        mail_handler = SMTPHandler(
+            mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
+            fromaddr='no-reply@' + app.config['MAIL_SERVER'],
+            toaddrs=app.config['ADMINS'], subject='Microblog Failure',
+            credentials=auth, secure=secure,
+        )
+        mail_handler.setLevel(logging.ERROR)
+        app.logger.addHandler(mail_handler)
+
+# configures logs for production
+if not os.path.exists('logs'):
+    os.mkdir('logs')
+file_handler = RotatingFileHandler(
+    'logs/microblog.log',
+    maxBytes=10240,
+    backupCount=10,
+)
+file_handler.setFormatter(logging.Formatter(
+    '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]' # noqa
+))
+file_handler.setLevel(logging.INFO)
+app.logger.addHandler(file_handler)
+
+app.logger.setLevel(logging.INFO)
+app.logger.info('Microblog startup')
 
 
 @app.shell_context_processor
@@ -42,6 +85,13 @@ def make_shell_context():
     running 'flask shell' from inside the venv command line
     '''
     return {'db': db, 'User': User, 'Post': Post}
+
+
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
 
 
 @app.route('/')
@@ -132,6 +182,22 @@ def user(username):
         {'author': user, 'body': 'Test post #2'},
     ]
     return render_template('user.pug', user=user, posts=posts)
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.about_me = form.about_me.data
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('edit_profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.about_me.data = current_user.about_me
+    return render_template('edit_profile.pug', title='Edit Profile', form=form)
 
 
 # ######### REDIS ######### #

@@ -2,6 +2,8 @@
 poetry.lock
 pyproject.toml
 sqlite_queries.sql
+docker-compose*
+Dockerfile*
 
 **/__pycache__
 **/.classpath
