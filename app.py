@@ -1,5 +1,5 @@
-from werkzeug.urls import url_parse
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.urls import url_parse
 from flask_migrate import Migrate
 from datetime import datetime
 import re
@@ -18,7 +18,6 @@ from flask_login import (
     login_required,
 )
 from config import Config
-
 # import redis
 # import time
 
