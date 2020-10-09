@@ -1,0 +1,6 @@
+extends base.pug
+block content
+    h1 User: #{user.username}
+    hr
+    for post in posts
+        p #{post.author.username} says: #[strong #{post.body}]
