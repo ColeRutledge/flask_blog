@@ -5,6 +5,16 @@ from hashlib import md5
 from app import db, login
 
 
+# creates a self-referential many-to-many relationship
+# to link instances of the same class -> 'User'
+# no need to declare as model bc it is an auxiliary table
+followers = db.Table(
+    'followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('users.id')),
+)
+
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
@@ -22,6 +32,12 @@ class User(UserMixin, db.Model):
     )
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    followed = db.relationship(
+        'User', secondary=followers, lazy='dynamic',
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'),
+    )
 
     def __repr__(self):
         return f'<User {self.username}>'
