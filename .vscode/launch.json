@@ -1,6 +1,13 @@
 {
     "configurations": [
         {
+            "name": "Debug Tests",
+            "type": "python",
+            "request": "test",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
             "name": "Python: Remote Attach",
             "type": "python",
             "request": "attach",
