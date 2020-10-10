@@ -1,11 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.urls import url_parse
-from flask_migrate import Migrate
+from config import Config
 from datetime import datetime
-from logging.handlers import SMTPHandler, RotatingFileHandler
-import logging
-import re
-import os
 from flask import (
     Flask,
     render_template,
@@ -20,9 +14,15 @@ from flask_login import (
     logout_user,
     login_required,
 )
-from config import Config
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from logging.handlers import SMTPHandler, RotatingFileHandler
+import logging
+import re
 # import redis
+import os
 # import time
+from werkzeug.urls import url_parse
 
 
 app = Flask(__name__)
@@ -71,12 +71,12 @@ file_handler = RotatingFileHandler(
     backupCount=10,
 )
 file_handler.setFormatter(logging.Formatter(
-    '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]' # noqa
+    '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
 ))
-file_handler.setLevel(logging.INFO)
+file_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(file_handler)
 
-app.logger.setLevel(logging.INFO)
+app.logger.setLevel(logging.DEBUG)
 app.logger.info('Microblog startup')
 
 

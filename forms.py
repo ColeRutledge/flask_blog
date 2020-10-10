@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from models import User
 from wtforms import (
     StringField,
     PasswordField,
@@ -13,7 +14,11 @@ from wtforms.validators import (
     EqualTo,
     Length,
 )
-from models import User
+
+
+# form for handling follow & unfollow actions
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')
 
 
 class LoginForm(FlaskForm):
@@ -60,8 +65,3 @@ class EditProfileForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError('Please use a different username.')
-
-
-# form for handling follow & unfollow actions
-class EmptyForm(FlaskForm):
-    submit = SubmitField('Submit')
