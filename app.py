@@ -34,15 +34,15 @@ login.login_view = 'login'
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
 
-from forms import LoginForm, RegistrationForm, EditProfileForm # noqa
-from models import User, Post # noqa
-import errors # noqa
+from forms import LoginForm, RegistrationForm, EditProfileForm
+from models import User, Post
+import errors
 
 
 # configures logs and email notifications on server issues in production
 if not app.debug:
 
-    # EMAIL NOTIFICATIONS
+    # EMAIL NOTIFICATIONS -- worked with localhost but not gmail
     if app.config['MAIL_SERVER']:
 
         auth = None
@@ -62,7 +62,7 @@ if not app.debug:
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
-# LOGS
+# LOGS -- INDENT TO USE FOR PROD ONLY
 if not os.path.exists('logs'):
     os.mkdir('logs')
 file_handler = RotatingFileHandler(
