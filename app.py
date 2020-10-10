@@ -39,8 +39,10 @@ from models import User, Post # noqa
 import errors # noqa
 
 
+# configures logs and email notifications on server issues in production
 if not app.debug:
-    # configures email notifications on server issues
+
+    # EMAIL NOTIFICATIONS
     if app.config['MAIL_SERVER']:
 
         auth = None
@@ -60,7 +62,7 @@ if not app.debug:
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
-# configures logs for production
+# LOGS
 if not os.path.exists('logs'):
     os.mkdir('logs')
 file_handler = RotatingFileHandler(
