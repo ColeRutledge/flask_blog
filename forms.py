@@ -60,3 +60,8 @@ class EditProfileForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError('Please use a different username.')
+
+
+# form for handling follow & unfollow actions
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')

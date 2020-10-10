@@ -2,7 +2,7 @@ extends base.pug
 block content
     h1 Register
     form(action='' method='post')
-        p #{form.hidden_tag()}
+        =form.hidden_tag()
 
         p #{form.username.label} #[strong #{form.username(size=32)}]
         each error in form.username.errors
