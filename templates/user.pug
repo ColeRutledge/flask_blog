@@ -24,3 +24,7 @@ block content
     hr
     for post in posts
         include _post.pug
+    if prev_url
+        a(href=prev_url) Newer posts
+    if next_url
+        a(href=next_url) Older posts
