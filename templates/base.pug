@@ -32,6 +32,7 @@ html(lang="en")
                 a(href=url_for('login')) Login
             else
                 a(href=url_for('user', username=current_user.username)) Profile
+                a(href=url_for('explore')) Explore
                 a(href=url_for('logout')) Logout
         hr
         messages = get_flashed_messages()

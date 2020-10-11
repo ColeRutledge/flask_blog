@@ -16,8 +16,17 @@ from wtforms.validators import (
 )
 
 
-# form for handling follow & unfollow actions
+# handles follow & unfollow actions
 class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')
+
+
+# handles the submission of blog posts
+class PostForm(FlaskForm):
+    post = TextAreaField(
+        'Say something',
+        validators=[DataRequired(), Length(min=1, max=140)]
+    )
     submit = SubmitField('Submit')
 
 

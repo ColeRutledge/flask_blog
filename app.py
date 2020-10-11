@@ -34,7 +34,7 @@ login.login_view = 'login'
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
 
-from forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm
+from forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm, PostForm
 from models import User, Post
 import errors
 
@@ -96,21 +96,36 @@ def before_request():
         db.session.commit()
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        },
-    ]
-    return render_template('index.pug', title='Home Page', posts=posts)
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post is now live!')
+        return redirect(url_for('index'))
+
+    posts = current_user.followed_posts().all()
+    return render_template(
+        'index.pug',
+        title='Home Page',
+        form=form,
+        posts=posts,
+    )
+
+
+@app.route('/explore')
+@login_required
+def explore():
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template(
+        'index.pug',
+        title='Explore',
+        posts=posts
+    )
 
 
 @app.route("/hello/<name>")
