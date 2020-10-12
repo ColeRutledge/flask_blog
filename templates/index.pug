@@ -7,29 +7,16 @@ block app_content
         .row
             .col-md-4
                 {{ wtf.quick_form(form) }}
+    br
     for post in posts
         include _post.pug
 
     nav(aria-label='...')
         ul.pager
-            li(class= prev_url ? 'previous' : 'disabled')
-                a(href= prev_url || '#') #[span(aria-hidden='true') &larr;] Newer posts
-            li(class= next_url ? 'next' : disabled)
-                a(href= next_url || '#') Older posts #[span(aria-hidden='true') &rarr;]
-
-//- nav(aria-label='...')
-//-     ul.pager
-//-         li.if.not.prev_url.endif(class='previous{% %} disabled{% %}')
-//-             a(href="{{ prev_url or '#' }}")
-//-                 span(aria-hidden='true') ←
-//-                 |  Newer posts
-//-         li.if.not.next_url.endif(class='next{% %} disabled{% %}')
-//-             a(href="{{ next_url or '#' }}")
-//-                 | Older posts
-//-                 span(aria-hidden='true') →
-
-
-//-
+            li(class={'previous': prev_url, 'hidden': not prev_url})
+                a(href=(prev_url or '#')) #[span(aria-hidden='true') &larr;] Newer posts
+            li(class={'next': next_url, 'hidden': not next_url})
+                a(href=(next_url or '#')) Older posts #[span(aria-hidden='true') &rarr;]
 
 
 //- if prev_url

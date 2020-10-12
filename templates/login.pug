@@ -6,6 +6,7 @@ block app_content
     .row
         .col-md-4
             {{ wtf.quick_form(form) }}
+    br
     p New User?
         a(href=url_for('register')) Click to Register!
     p Forgot Your Password?
