@@ -30,6 +30,21 @@ class PostForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+# forgot password reset link on login page
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password',
+        validators=[DataRequired(), EqualTo('password')],
+    )
+    submit = SubmitField('Request Password Reset')
+
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
