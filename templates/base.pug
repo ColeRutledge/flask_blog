@@ -1,10 +1,17 @@
 extends bootstrap/base.html
 
+
+block scripts
+    {{ super() }}
+    {{ moment.include_moment() }}
+
+
 block title
     if title
         title #{title} - Microblog
     else
         title Welcome to Microblog
+
 
 block navbar
     nav.navbar.navbar-default
@@ -26,6 +33,7 @@ block navbar
                     else
                         li: a(href=url_for('user', username=current_user.username)) Profile
                         li: a(href=url_for('logout')) Logout
+
 
 block content
     div.container

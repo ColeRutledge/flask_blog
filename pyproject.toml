@@ -17,6 +17,7 @@ email-validator = "^1.1.1"
 Flask-Mail = "^0.9.1"
 PyJWT = "^1.7.1"
 Flask-Bootstrap = "^3.3.7"
+Flask-Moment = "^0.10.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"

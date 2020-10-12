@@ -8,7 +8,7 @@ block app_content
                 if user.about_me
                     p= user.about_me
                 if user.last_seen
-                    p Last seen on: #{user.last_seen}
+                    p Last seen on: #{moment(user.last_seen).format('LLL')}
 
                 p #{user.followers.count()} followers, #{user.followed.count()} following.
                 if user == current_user
@@ -21,7 +21,7 @@ block app_content
                     form(action=url_for('unfollow', username=user.username), method='post')
                         =form.hidden_tag()
                         =form.submit(value='Unfollow')
-    hr
+    br
     for post in posts
         include _post.pug
     if prev_url

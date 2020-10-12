@@ -11,6 +11,7 @@ from flask_login import (
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_migrate import Migrate
+from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import logging
@@ -26,6 +27,7 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 mail = Mail(app)
+moment = Moment(app)
 login = LoginManager(app)
 login.login_view = 'login'
 bootstrap = Bootstrap(app)
@@ -75,10 +77,10 @@ file_handler = RotatingFileHandler(
 file_handler.setFormatter(logging.Formatter(
     '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
 ))
-file_handler.setLevel(logging.DEBUG)
+file_handler.setLevel(logging.INFO)
 app.logger.addHandler(file_handler)
 
-app.logger.setLevel(logging.DEBUG)
+app.logger.setLevel(logging.INFO)
 app.logger.info('Microblog startup')
 
 
@@ -88,7 +90,8 @@ def make_shell_context():
     decorator that gives access to the flask env context by
     running 'flask shell' from inside the venv command line
     '''
-    return {'db': db, 'User': User, 'Post': Post}
+    return {'db': db, 'User': User, 'Post': Post,
+            'login': login, 'mail': mail, 'moment': moment}
 
 
 @app.before_request
