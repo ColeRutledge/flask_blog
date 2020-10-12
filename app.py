@@ -8,6 +8,7 @@ from flask_login import (
     current_user, LoginManager, login_required,
     login_user, logout_user,
 )
+from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -27,6 +28,7 @@ migrate = Migrate(app, db)
 mail = Mail(app)
 login = LoginManager(app)
 login.login_view = 'login'
+bootstrap = Bootstrap(app)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
 

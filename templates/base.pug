@@ -1,31 +1,13 @@
-<!DOCTYPE html>
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        style.
-            body {
-                margin: 50px;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-                    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-                    sans-serif;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-            code {
-                font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-                monospace;
-            }
-            a {
-                text-decoration: none;
-                color: rgba(0 0 0 / 75%);
-            }
+extends bootstrap/base.html
 
-        if title
-            title #{title} - Microblog
-        else
-            title Welcome to Microblog
-    body
+block title
+    if title
+        title #{title} - Microblog
+    else
+        title Welcome to Microblog
+
+block navbar
+    nav.navbar.navbar-default
         div Microblog:
             a(href=url_for('index')) Home
             if current_user.is_anonymous
@@ -34,10 +16,42 @@ html(lang="en")
                 a(href=url_for('user', username=current_user.username)) Profile
                 a(href=url_for('explore')) Explore
                 a(href=url_for('logout')) Logout
+
+block content
+    div.container
         hr
         messages = get_flashed_messages()
         if messages
             ul
             each message in messages
-                li= message
-        block content
+                div(class='alert alert-info' role='alert') #{message}
+        block app_content
+
+
+//- original base.pug before using flask-bootstrap
+
+//- <!DOCTYPE html>
+//- html(lang="en")
+//-     head
+//-         meta(charset="UTF-8")
+//-         meta(name="viewport", content="width=device-width, initial-scale=1.0")
+//-         if title
+//-             title #{title} - Microblog
+//-         else
+//-             title Welcome to Microblog
+//-     body
+//-         div Microblog:
+//-             a(href=url_for('index')) Home
+//-             if current_user.is_anonymous
+//-                 a(href=url_for('login')) Login
+//-             else
+//-                 a(href=url_for('user', username=current_user.username)) Profile
+//-                 a(href=url_for('explore')) Explore
+//-                 a(href=url_for('logout')) Logout
+//-         hr
+//-         messages = get_flashed_messages()
+//-         if messages
+//-             ul
+//-             each message in messages
+//-                 li= message
+//-         block content

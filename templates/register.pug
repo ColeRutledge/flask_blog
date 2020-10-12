@@ -1,23 +1,30 @@
 extends base.pug
-block content
+{% import 'bootstrap/wtf.html' as wtf %}
+block app_content
     h1 Register
-    form(action='' method='post')
-        =form.hidden_tag()
+    .row
+        .col-md-4
+            {{ wtf.quick_form(form) }}
 
-        p #{form.username.label} #[strong #{form.username(size=32)}]
-        each error in form.username.errors
-            span(style='color: red;') [#{error}]
+//- BEFORE USING Flask-Bootstrap
 
-        p #{form.email.label} #[strong #{form.email(size=32)}]
-        each error in form.email.errors
-            span(style='color: red;') [#{error}]
+//- form(action='' method='post')
+//-     =form.hidden_tag()
 
-        p #{form.password.label} #[strong #{form.password(size=32)}]
-        each error in form.password.errors
-            span(style='color: red;') [#{error}]
+//-     p #{form.username.label} #[br] #{form.username(size=32)}
+//-     each error in form.username.errors
+//-         span(style='color: red;') [#{error}]
 
-        p #{form.password2.label} #[strong #{form.password2(size=32)}]
-        each error in form.password2.errors
-            span(style='color: red;') [#{error}]
+//-     p #{form.email.label} #[br] #{form.email(size=32)}
+//-     each error in form.email.errors
+//-         span(style='color: red;') [#{error}]
 
-        p #{form.submit()}
+//-     p #{form.password.label} #[br] #{form.password(size=32)}
+//-     each error in form.password.errors
+//-         span(style='color: red;') [#{error}]
+
+//-     p #{form.password2.label} #[br] #{form.password2(size=32)}
+//-     each error in form.password2.errors
+//-         span(style='color: red;') [#{error}]
+
+//-     p #{form.submit()}

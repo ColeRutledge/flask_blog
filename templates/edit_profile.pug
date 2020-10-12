@@ -1,15 +1,22 @@
 extends base.pug
-block content
+{% import 'bootstrap/wtf.html' as wtf %}
+
+block app_content
     h1 Edit Profile
-    form(action='' method='post')
-        =form.hidden_tag()
+    .row
+        .col-md-4
+            {{ wtf.quick_form(form) }}
 
-        p #{form.username.label} #[br] #{form.username(size=32)}
-        each error in form.username.errors
-            span(style='color: red;') [#{error}]
 
-        p #{form.about_me.label} #[br] #{form.about_me(cols=50, rows=4)}
-        each error in form.about_me.errors
-            span(style='color: red;') [#{error}]
+//- form(action='' method='post')
+//-     =form.hidden_tag()
 
-        p #{form.submit()}
+//-     p #{form.username.label} #[br] #{form.username(size=32)}
+//-     each error in form.username.errors
+//-         span(style='color: red;') [#{error}]
+
+//-     p #{form.about_me.label} #[br] #{form.about_me(cols=50, rows=4)}
+//-     each error in form.about_me.errors
+//-         span(style='color: red;') [#{error}]
+
+//-     p #{form.submit()}

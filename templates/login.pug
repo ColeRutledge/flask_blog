@@ -1,21 +1,31 @@
 extends base.pug
+{% import 'bootstrap/wtf.html' as wtf %}
 
-block content
+block app_content
     h1 Sign In
-    form(action='' method='post' novalidate)
-        =form.hidden_tag()
+    .row
+        .col-md-4
+            {{ wtf.quick_form(form) }}
+    p New User?
+        a(href=url_for('register')) Click to Register!
+    p Forgot Your Password?
+        a(href=url_for('reset_password_request')) Click to Reset It
 
-        p #{form.username.label} #[strong #{form.username(size=32)}]
-        each error in form.username.errors
-            span(style='color: red;') [#{error}]
 
-        p #{form.password.label} #[strong #{form.password(size=32)}]
-        each error in form.password.errors
-            span(style='color: red;') [#{error}]
+//- form(action='' method='post' novalidate)
+//-     =form.hidden_tag()
 
-        p #{form.remember_me()} #{form.remember_me.label}
-        p #{form.submit()}
-        p New User?
-            a(href=url_for('register')) Click to Register!
-        p Forgot Your Password?
-            a(href=url_for('reset_password_request')) Click to Reset It
+//-     p #{form.username.label} #[br] #{form.username(size=32)}
+//-     each error in form.username.errors
+//-         span(style='color: red;') [#{error}]
+
+//-     p #{form.password.label} #[br] #{form.password(size=32)}
+//-     each error in form.password.errors
+//-         span(style='color: red;') [#{error}]
+
+//-     p #{form.remember_me()} #{form.remember_me.label}
+//-     p #{form.submit()}
+//-     p New User?
+//-         a(href=url_for('register')) Click to Register!
+//-     p Forgot Your Password?
+//-         a(href=url_for('reset_password_request')) Click to Reset It

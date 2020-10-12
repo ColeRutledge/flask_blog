@@ -1,17 +1,46 @@
 extends base.pug
-block content
+{% import 'bootstrap/wtf.html' as wtf %}
+block app_content
     //- h1 Hello World! I have been seen #{count} times.
     h1 Hello, #{current_user.username}!
     if form
-        form(action='' method='post')
-            =form.hidden_tag()
-            p #{form.post.label} #[br] #{form.post(cols=32, rows=4)} #[br]
-            for error in form.post.errors
-                span(style='color: red;') #{error}
-            p #{form.submit}
+        .row
+            .col-md-4
+                {{ wtf.quick_form(form) }}
     for post in posts
         include _post.pug
-    if prev_url
-        a(href=prev_url) Newer posts
-    if next_url
-        a(href=next_url) Older posts
+
+    nav(aria-label='...')
+        ul.pager
+            li(class= prev_url ? 'previous' : 'disabled')
+                a(href= prev_url || '#') #[span(aria-hidden='true') &larr;] Newer posts
+            li(class= next_url ? 'next' : disabled)
+                a(href= next_url || '#') Older posts #[span(aria-hidden='true') &rarr;]
+
+//- nav(aria-label='...')
+//-     ul.pager
+//-         li.if.not.prev_url.endif(class='previous{% %} disabled{% %}')
+//-             a(href="{{ prev_url or '#' }}")
+//-                 span(aria-hidden='true') ←
+//-                 |  Newer posts
+//-         li.if.not.next_url.endif(class='next{% %} disabled{% %}')
+//-             a(href="{{ next_url or '#' }}")
+//-                 | Older posts
+//-                 span(aria-hidden='true') →
+
+
+//-
+
+
+//- if prev_url
+//-     a(href=prev_url) Newer posts
+//- if next_url
+//-     a(href=next_url) Older posts
+
+
+//- form(action='' method='post')
+//-     =form.hidden_tag()
+//-     p #{form.post.label} #[br] #{form.post(cols=32, rows=4)} #[br]
+//-     for error in form.post.errors
+//-         span(style='color: red;') #{error}
+//-     p #{form.submit}
