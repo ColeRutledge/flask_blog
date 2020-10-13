@@ -2,7 +2,7 @@ extends base.pug
 {% import 'bootstrap/wtf.html' as wtf %}
 block app_content
     //- h1 Hello World! I have been seen #{count} times.
-    h1 Hello, #{current_user.username}!
+    h1 #{_('Hello,')} #{current_user.username}!
     if form
         .row
             .col-md-4
@@ -14,9 +14,9 @@ block app_content
     nav(aria-label='...')
         ul.pager
             li(class={'previous': prev_url, 'hidden': not prev_url})
-                a(href=(prev_url or '#')) #[span(aria-hidden='true') &larr;] Newer posts
+                a(href=(prev_url or '#')) #[span(aria-hidden='true') &larr;] #{_('Newer posts')}
             li(class={'next': next_url, 'hidden': not next_url})
-                a(href=(next_url or '#')) Older posts #[span(aria-hidden='true') &rarr;]
+                a(href=(next_url or '#')) #{_('Older posts')} #[span(aria-hidden='true') &rarr;]
 
 
 //- if prev_url

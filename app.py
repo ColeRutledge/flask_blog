@@ -4,11 +4,12 @@ from flask import (
     flash, Flask, redirect,
     render_template, request, url_for,
 )
+from flask_babel import Babel, _, lazy_gettext as _l
+from flask_bootstrap import Bootstrap
 from flask_login import (
     current_user, LoginManager, login_required,
     login_user, logout_user,
 )
-from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_moment import Moment
@@ -26,10 +27,12 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+babel = Babel(app)
 mail = Mail(app)
 moment = Moment(app)
 login = LoginManager(app)
 login.login_view = 'login'
+login.login_message = _l('Please log in to access this page.')
 bootstrap = Bootstrap(app)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
@@ -46,7 +49,7 @@ import errors
 # configures logs and email notifications on server issues in production
 # if not app.debug:
 
-# EMAIL NOTIFICATIONS -- worked with localhost but not gmail
+# EMAIL NOTIFICATIONS
 if app.config['MAIL_SERVER']:
 
     auth = None
@@ -101,6 +104,12 @@ def before_request():
         db.session.commit()
 
 
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    # return 'es'
+
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
@@ -110,7 +119,7 @@ def index():
         post = Post(body=form.post.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash('Your post is now live!')
+        flash(_('Your post is now live!'))
         return redirect(url_for('index'))
 
     page = request.args.get('page', 1, type=int)
@@ -125,7 +134,7 @@ def index():
     prev_url = url_for('index', page=posts.prev_num) if posts.has_prev else None
     return render_template(
         'index.pug',
-        title='Home Page', form=form, posts=posts.items,
+        title=_('Home Page'), form=form, posts=posts.items,
         next_url=next_url, prev_url=prev_url,
     )
 
@@ -145,7 +154,7 @@ def explore():
     prev_url = url_for('explore', page=posts.prev_num) if posts.has_prev else None
     return render_template(
         'index.pug',
-        title='Explore', posts=posts.items,
+        title=_('Explore'), posts=posts.items,
         next_url=next_url, prev_url=prev_url,
     )
 
@@ -177,7 +186,7 @@ def login():
 
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash(_('Invalid username or password'))
             return redirect(url_for('login'))
 
         # for security only redirect when url is relative
@@ -187,7 +196,7 @@ def login():
             next_page = url_for('index')
 
         return redirect(url_for('index'))
-    return render_template('login.pug', title='Sign In', form=form)
+    return render_template('login.pug', title=_('Sign In'), form=form)
 
 
 @app.route('/logout')
@@ -207,9 +216,9 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
+        flash(_('Congratulations, you are now a registered user!'))
         return redirect(url_for('login'))
-    return render_template('register.pug', title='Register', form=form)
+    return render_template('register.pug', title=_('Register'), form=form)
 
 
 @app.route('/user/<username>')
@@ -244,12 +253,12 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         db.session.commit()
-        flash('Your changes have been saved.')
+        flash(_('Your changes have been saved.'))
         return redirect(url_for('edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    return render_template('edit_profile.pug', title='Edit Profile', form=form)
+    return render_template('edit_profile.pug', title=_('Edit Profile'), form=form)
 
 
 @app.route('/follow/<username>', methods=['POST'])
@@ -261,15 +270,15 @@ def follow(username):
 
         user = User.query.filter_by(username=username).first()
         if user is None:
-            flash(f'User {username} not found.')
+            flash(_('User %(username)s not found.', username=username))
             return redirect(url_for('index'))
         if user == current_user:
-            flash('You cannot follow yourself!')
+            flash(_('You cannot follow yourself!'))
             return redirect(url_for('user', username=username))
 
         current_user.follow(user)
         db.session.commit()
-        flash(f'You are following {username}')
+        flash(_('You are following %(username)s.', username=username))
         return redirect(url_for('user', username=username))
     else:
         #  CSRF token is missing or invalid
@@ -285,15 +294,15 @@ def unfollow(username):
 
         user = User.query.filter_by(username=username).first()
         if user is None:
-            flash(f'User {username} not found.')
+            flash(_('User %(username)s not found.', username=username))
             return redirect(url_for('index'))
         if user == current_user:
-            flash('You cannot unfollow yourself!')
+            flash(_('You cannot unfollow yourself!'))
             return redirect(url_for('user'), username=username)
 
         current_user.unfollow(user)
         db.session.commit()
-        flash(f'You have unfollowed {username}')
+        flash(_('You have unfollowed %(username)s.', username=username))
         return redirect(url_for('user', username=username))
     else:
         # CSRF token is missing or invalid
@@ -310,12 +319,12 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-        flash('Check your email for the instructions to reset your password')
+        flash(_('Check your email for the instructions to reset your password'))
         return redirect(url_for('login'))
 
     return render_template(
         'reset_password_request.pug',
-        title='Reset Password', form=form
+        title=_('Reset Password'), form=form
     )
 
 
@@ -332,7 +341,7 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Your password has been reset.')
+        flash(_('Your password has been reset.'))
         return redirect(url_for('login'))
 
     return render_template('reset_password.pug', form=form)
