@@ -19,6 +19,8 @@ PyJWT = "^1.7.1"
 Flask-Bootstrap = "^3.3.7"
 Flask-Moment = "^0.10.0"
 Flask-Babel = "^2.0.0"
+guess_language-spirit = "^0.5.3"
+requests = "^2.24.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"

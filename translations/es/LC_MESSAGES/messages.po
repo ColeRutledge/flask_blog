@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-10-12 23:54-0400\n"
+"POT-Creation-Date: 2020-10-13 14:16-0400\n"
 "PO-Revision-Date: 2020-10-12 21:03-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -18,80 +18,80 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app.py:35
+#: app.py:36
 msgid "Please log in to access this page."
 msgstr "Inicie sesión para acceder a esta página."
 
-#: app.py:123
+#: app.py:129
 msgid "Your post is now live!"
 msgstr "¡Tu publicación ya está publicada!"
 
-#: app.py:138
+#: app.py:144
 msgid "Home Page"
-msgstr ""
+msgstr "Página de inicio"
 
-#: app.py:158 templates/base.pug:29
+#: app.py:164 templates/base.pug:43
 msgid "Explore"
-msgstr ""
+msgstr "Explorar"
 
-#: app.py:190
+#: app.py:196
 msgid "Invalid username or password"
 msgstr "usuario o contraseña invalido"
 
-#: app.py:200 forms.py:53 templates/login.pug:5
+#: app.py:206 forms.py:53 templates/login.pug:5
 msgid "Sign In"
 msgstr "Registrarse"
 
-#: app.py:220
+#: app.py:226
 msgid "Congratulations, you are now a registered user!"
 msgstr "¡Felicidades, ahora eres un usuario registrado!"
 
-#: app.py:222 forms.py:64 templates/register.pug:4
+#: app.py:228 forms.py:64 templates/register.pug:4
 msgid "Register"
 msgstr "Registrarse"
 
-#: app.py:257
+#: app.py:263
 msgid "Your changes have been saved."
 msgstr "Se han guardado los cambios."
 
-#: app.py:262 templates/edit_profile.pug:5
+#: app.py:268 templates/edit_profile.pug:5
 msgid "Edit Profile"
-msgstr ""
+msgstr "Editar perfil"
 
-#: app.py:274 app.py:298
+#: app.py:280 app.py:304
 #, python-format
 msgid "User %(username)s not found."
 msgstr "Usuario% (username)s no encontrado."
 
-#: app.py:277
+#: app.py:283
 msgid "You cannot follow yourself!"
 msgstr "¡No puedes seguirte a ti mismo!"
 
-#: app.py:282
+#: app.py:288
 #, python-format
 msgid "You are following %(username)s."
 msgstr "Estas siguiendo %(username)s."
 
-#: app.py:301
+#: app.py:307
 msgid "You cannot unfollow yourself!"
-msgstr ""
+msgstr "¡No puedes dejar de seguirte a ti mismo!"
 
-#: app.py:306
+#: app.py:312
 #, python-format
 msgid "You have unfollowed %(username)s."
-msgstr ""
+msgstr "Has dejado de seguir %(username)s."
 
-#: app.py:323
+#: app.py:329
 msgid "Check your email for the instructions to reset your password"
 msgstr ""
 "Consulte su correo electrónico para obtener las instrucciones para "
 "restablecer su contraseña"
 
-#: app.py:328 templates/reset_password_request.pug:5
+#: app.py:334 templates/reset_password_request.pug:5
 msgid "Reset Password"
-msgstr ""
+msgstr "Restablecer la contraseña"
 
-#: app.py:345
+#: app.py:351
 msgid "Your password has been reset."
 msgstr "Tu contraseña ha sido restablecida."
 
@@ -139,6 +139,14 @@ msgstr "Por favor utilice una dirección de correo electrónico diferente."
 msgid "About me"
 msgstr "Sobre mí"
 
+#: translate.py:9
+msgid "Error: the translation service is not configured."
+msgstr "Error: el servicio de traducción no está configurado."
+
+#: translate.py:20
+msgid "Error: the translation service failed."
+msgstr "Error: el servicio de traducción falló."
+
 #: templates/404.pug:3
 msgid "File Not Found"
 msgstr "Archivo no encontrado"
@@ -162,32 +170,45 @@ msgstr ""
 msgid "%(username)s said %(when)s:"
 msgstr "%(username)s dijo %(when)s"
 
-#: templates/base.pug:11
+#: templates/_post.pug:21
+msgid "Translate"
+msgstr "Traducir"
+
+#: templates/_post.pug:26
+#, python-format
+msgid "%(username)s said %(when)s"
+msgstr "%(username)s dijo %(when)s"
+
+#: templates/base.pug:18
+msgid "Error: Could not contact server."
+msgstr "Error: No se pudo contactar con el servidor."
+
+#: templates/base.pug:25
 #, python-format
 msgid "%(title)s - Microblog"
 msgstr "%(title)s - Microblog"
 
-#: templates/base.pug:13
+#: templates/base.pug:27
 msgid "Welcome to Microblog"
 msgstr "Bienvenido a Microblog"
 
-#: templates/base.pug:28
+#: templates/base.pug:42
 msgid "Home"
 msgstr "Casa"
 
-#: templates/base.pug:32
+#: templates/base.pug:46
 msgid "Login"
 msgstr "Iniciar sesión"
 
-#: templates/base.pug:34
+#: templates/base.pug:48
 msgid "Profile"
 msgstr "Perfil"
 
-#: templates/base.pug:35
+#: templates/base.pug:49
 msgid "Logout"
 msgstr "Cerrar sesión"
 
-#: templates/base.pug:45
+#: templates/base.pug:59
 #, python-format
 msgid "%(message)s"
 msgstr "%(message)s"
@@ -195,7 +216,7 @@ msgstr "%(message)s"
 #: templates/index.pug:5
 #, python-format
 msgid "Hello, %(username)s!"
-msgstr "Hola, %(username)s!"
+msgstr "¡Hola, %(username)s!"
 
 #: templates/index.pug:17 templates/user.pug:27
 msgid "Newer posts"

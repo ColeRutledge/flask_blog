@@ -1,10 +1,10 @@
 from config import Config
 from datetime import datetime
 from flask import (
-    flash, Flask, redirect,
+    flash, Flask, redirect, g, jsonify,
     render_template, request, url_for,
 )
-from flask_babel import Babel, _, lazy_gettext as _l
+from flask_babel import Babel, _, lazy_gettext as _l, get_locale as gl
 from flask_bootstrap import Bootstrap
 from flask_login import (
     current_user, LoginManager, login_required,
@@ -14,6 +14,7 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from guess_language import guess_language
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import logging
 import re
@@ -45,6 +46,7 @@ from forms import (
     EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
 )
 from models import User, Post
+from translate import translate
 
 
 # configures logs and email notifications on server issues in production
@@ -103,12 +105,13 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+    # using aliased get_locale from flask-babel
+    g.locale = str(gl())
 
 
 @babel.localeselector
 def get_locale():
-    # return request.accept_languages.best_match(app.config['LANGUAGES'])
-    return 'es'
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -117,7 +120,10 @@ def get_locale():
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
+        language = guess_language(form.post.data)
+        if language == 'UNKNOWN' or len(language) > 5:
+            language = ''
+        post = Post(body=form.post.data, author=current_user, language=language)
         db.session.add(post)
         db.session.commit()
         flash(_('Your post is now live!'))
@@ -346,6 +352,18 @@ def reset_password(token):
         return redirect(url_for('login'))
 
     return render_template('reset_password.pug', form=form)
+
+
+@app.route('/translate', methods=['POST'])
+@login_required
+def translate_text():
+    return jsonify({
+        'text': translate(
+            request.form['text'],
+            request.form['source_language'],
+            request.form['dest_language']
+        )
+    })
 
 
 # ######### REDIS ######### #
