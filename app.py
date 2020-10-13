@@ -14,7 +14,6 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from guess_language import guess_language
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import logging
 import re
@@ -38,6 +37,7 @@ bootstrap = Bootstrap(app)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
 
+
 import cli
 import errors
 from email_utils import send_password_reset_email
@@ -46,7 +46,7 @@ from forms import (
     EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
 )
 from models import User, Post
-from translate import translate
+from translate import translate, detect_text
 
 
 # configures logs and email notifications on server issues in production
@@ -120,7 +120,7 @@ def get_locale():
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        language = guess_language(form.post.data)
+        language = detect_text(form.post.data)
         if language == 'UNKNOWN' or len(language) > 5:
             language = ''
         post = Post(body=form.post.data, author=current_user, language=language)

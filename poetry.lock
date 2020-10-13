@@ -292,14 +292,6 @@ itsdangerous = "*"
 WTForms = "*"
 
 [[package]]
-name = "guess-language-spirit"
-version = "0.5.3"
-description = "Guess the natural language of a text"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "idna"
 version = "2.10"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -747,7 +739,7 @@ locale = ["Babel (>=1.3)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "2d2a29ca1905fc4cef2475d87b55d404873f883dd37e06c2563b3ef358ae84c1"
+content-hash = "f730c0e094b66e1a966fe7218a1e7c8ecf1cabf66359813e9d58455f158d63c2"
 
 [metadata.files]
 alembic = [
@@ -850,9 +842,6 @@ flask-sqlalchemy = [
 flask-wtf = [
     {file = "Flask-WTF-0.14.3.tar.gz", hash = "sha256:d417e3a0008b5ba583da1763e4db0f55a1269d9dd91dcc3eb3c026d3c5dbd720"},
     {file = "Flask_WTF-0.14.3-py2.py3-none-any.whl", hash = "sha256:57b3faf6fe5d6168bda0c36b0df1d05770f8e205e18332d0376ddb954d17aef2"},
-]
-guess-language-spirit = [
-    {file = "guess_language-spirit-0.5.3.tar.bz2", hash = "sha256:a9b20470246bbfd1b69b055ff6459e05aa8cb5f1f1d8481350819cd7680792cc"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
