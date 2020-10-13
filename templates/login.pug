@@ -2,15 +2,15 @@ extends base.pug
 {% import 'bootstrap/wtf.html' as wtf %}
 
 block app_content
-    h1 Sign In
+    h1 {{ _('Sign In') }}
     .row
         .col-md-4
             {{ wtf.quick_form(form) }}
     br
-    p #{_('New User?')}
-        a(href=url_for('register')) #{_('Click to Register!')}
-    p #{_('Forgot Your Password?')}
-        a(href=url_for('reset_password_request')) #{_('Click to Reset It')}
+    p {{ _('New User?') }}
+        a(href=url_for('register')) {{ _('Click to Register!') }}
+    p {{ _('Forgot Your Password?') }}
+        a(href=url_for('reset_password_request')) {{ _('Click to Reset It') }}
 
 
 //- form(action='' method='post' novalidate)

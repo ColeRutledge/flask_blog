@@ -8,9 +8,9 @@ block scripts
 
 block title
     if title
-        title #{title} - Microblog
+        title {{ _('%(title)s - Microblog', title=title) }}
     else
-        title Welcome to Microblog
+        title {{ _('Welcome to Microblog') }}
 
 
 block navbar
@@ -25,14 +25,14 @@ block navbar
                 a.navbar-brand(href=url_for('index')) Microblog
             div.collapse.navbar-collapse(id='bs-example-navbar-collapse-1')
                 ul.nav.navbar-nav
-                    li: a(href=url_for('index')) #{_('Home')}
-                    li: a(href=url_for('explore')) #{_('Explore')}
+                    li: a(href=url_for('index')) {{ _('Home') }}
+                    li: a(href=url_for('explore')) {{ _('Explore') }}
                 ul.nav.navbar-nav.navbar-right
                     if current_user.is_anonymous
-                        li: a(href=url_for('login')) #{_('Login')}
+                        li: a(href=url_for('login')) {{ _('Login') }}
                     else
-                        li: a(href=url_for('user', username=current_user.username)) #{_('Profile')}
-                        li: a(href=url_for('logout')) #{_('Logout')}
+                        li: a(href=url_for('user', username=current_user.username)) {{ _('Profile') }}
+                        li: a(href=url_for('logout')) {{ _('Logout') }}
 
 
 block content
@@ -42,7 +42,7 @@ block content
         if messages
             ul
             each message in messages
-                div(class='alert alert-info' role='alert') #{_(message)}
+                div(class='alert alert-info' role='alert') {{ _('%(message)s', message=message) }}
         block app_content
 
 

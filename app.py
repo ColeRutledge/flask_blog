@@ -37,13 +37,14 @@ bootstrap = Bootstrap(app)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
 
+import cli
+import errors
+from email_utils import send_password_reset_email
 from forms import (
     LoginForm, RegistrationForm, EditProfileForm,
     EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
 )
 from models import User, Post
-from email_utils import send_password_reset_email
-import errors
 
 
 # configures logs and email notifications on server issues in production
@@ -106,8 +107,8 @@ def before_request():
 
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
-    # return 'es'
+    # return request.accept_languages.best_match(app.config['LANGUAGES'])
+    return 'es'
 
 
 @app.route('/', methods=['GET', 'POST'])
