@@ -8,9 +8,9 @@ block app_content
             {{ wtf.quick_form(form) }}
     br
     p {{ _('New User?') }}
-        a(href=url_for('register')) {{ _('Click to Register!') }}
+        a(href=url_for('auth.register')) {{ _('Click to Register!') }}
     p {{ _('Forgot Your Password?') }}
-        a(href=url_for('reset_password_request')) {{ _('Click to Reset It') }}
+        a(href=url_for('auth.reset_password_request')) {{ _('Click to Reset It') }}
 
 
 //- form(action='' method='post' novalidate)

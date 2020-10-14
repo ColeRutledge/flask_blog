@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from app import app, db
-from models import User, Post
+from app.models import User, Post
 
 
 # setup function that will run prior to each function test

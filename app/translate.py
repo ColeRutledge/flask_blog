@@ -1,13 +1,13 @@
-from app import app
 import json
+from flask import current_app
 from flask_babel import _
 import requests
 
 
 def translate(text, source_language, dest_language):
-    if 'MS_TRANSLATOR_KEY' not in app.config or not app.config['MS_TRANSLATOR_KEY']:
+    if 'MS_TRANSLATOR_KEY' not in current_app.config or not current_app.config['MS_TRANSLATOR_KEY']:
         return _('Error: the translation service is not configured.')
-    auth = {'Ocp-Apim-Subscription-Key': app.config['MS_TRANSLATOR_KEY']}
+    auth = {'Ocp-Apim-Subscription-Key': current_app.config['MS_TRANSLATOR_KEY']}
     r = requests.get(
         'https://api.microsofttranslator.com/v2/Ajax.svc/Translate'
         f'?text={text}&from={source_language}&to={dest_language}', headers=auth,
@@ -18,11 +18,11 @@ def translate(text, source_language, dest_language):
 
 
 def detect_language(text):
-    if 'MS_TRANSLATOR_KEY' not in app.config or not app.config['MS_TRANSLATOR_KEY']:
+    if 'MS_TRANSLATOR_KEY' not in current_app.config or not current_app.config['MS_TRANSLATOR_KEY']:
         return _('Error: the translation service is not configured.')
     body = json.dumps([{"text": text}])
     headers = {
-        'Ocp-Apim-Subscription-Key': app.config['MS_TRANSLATOR_KEY'],
+        'Ocp-Apim-Subscription-Key': current_app.config['MS_TRANSLATOR_KEY'],
         'Content-Type': 'application/json',
         'Content-Length': str(len(text)),
     }

@@ -11,13 +11,13 @@ block app_content
                     p {{ _('Last seen on: %(moment)s', moment=moment(user.last_seen).format('LLL')) }}
                 p {{ _('%(follower_count)s followers, %(followed_count)s following.', follower_count=user.followers.count(), followed_count=user.followed.count()) }}
                 if user == current_user
-                    p: a(href=url_for('edit_profile')) {{ _('Edit your profile') }}
+                    p: a(href=url_for('main.edit_profile')) {{ _('Edit your profile') }}
                 elif not current_user.is_following(user)
-                    form(action=url_for('follow', username=user.username), method='post')
+                    form(action=url_for('main.follow', username=user.username), method='post')
                         =form.hidden_tag()
                         =form.submit(value=_('Follow'))
                 else
-                    form(action=url_for('unfollow', username=user.username), method='post')
+                    form(action=url_for('main.unfollow', username=user.username), method='post')
                         =form.hidden_tag()
                         =form.submit(value=_('Unfollow'))
     br

@@ -36,17 +36,17 @@ block navbar
                     span.icon-bar
                     span.icon-bar
                     span.icon-bar
-                a.navbar-brand(href=url_for('index')) Microblog
+                a.navbar-brand(href=url_for('main.index')) Microblog
             div.collapse.navbar-collapse(id='bs-example-navbar-collapse-1')
                 ul.nav.navbar-nav
-                    li: a(href=url_for('index')) {{ _('Home') }}
-                    li: a(href=url_for('explore')) {{ _('Explore') }}
+                    li: a(href=url_for('main.index')) {{ _('Home') }}
+                    li: a(href=url_for('main.explore')) {{ _('Explore') }}
                 ul.nav.navbar-nav.navbar-right
                     if current_user.is_anonymous
-                        li: a(href=url_for('login')) {{ _('Login') }}
+                        li: a(href=url_for('auth.login')) {{ _('Login') }}
                     else
-                        li: a(href=url_for('user', username=current_user.username)) {{ _('Profile') }}
-                        li: a(href=url_for('logout')) {{ _('Logout') }}
+                        li: a(href=url_for('main.user', username=current_user.username)) {{ _('Profile') }}
+                        li: a(href=url_for('auth.logout')) {{ _('Logout') }}
 
 
 block content
