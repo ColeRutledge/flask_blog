@@ -17,10 +17,10 @@ def translate(text, source_language, dest_language):
     return json.loads(r.content.decode('utf-8-sig'))
 
 
-def detect_text(text):
+def detect_language(text):
     if 'MS_TRANSLATOR_KEY' not in app.config or not app.config['MS_TRANSLATOR_KEY']:
         return _('Error: the translation service is not configured.')
-    body = [{"text": text}]
+    body = json.dumps([{"text": text}])
     headers = {
         'Ocp-Apim-Subscription-Key': app.config['MS_TRANSLATOR_KEY'],
         'Content-Type': 'application/json',
@@ -28,9 +28,8 @@ def detect_text(text):
     }
     r = requests.post(
         'https://api.cognitive.microsofttranslator.com/detect?api-version=3.0',
-        headers=headers, data=json.dumps(body),
+        headers=headers, data=body,
     )
     if r.status_code != 200:
-        print(r.status_code)
         return 'UNKNOWN'
     return json.loads(r.content.decode('utf-8-sig'))[0]['language']

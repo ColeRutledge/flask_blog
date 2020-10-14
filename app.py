@@ -16,6 +16,7 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import logging
+from pathlib import Path
 import re
 # import redis
 import os
@@ -38,23 +39,10 @@ app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 # cache = redis.Redis(host='redis_cache', port=6379, decode_responses=True)
 
 
-import cli
-import errors
-from email_utils import send_password_reset_email
-from forms import (
-    LoginForm, RegistrationForm, EditProfileForm,
-    EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
-)
-from models import User, Post
-from translate import translate, detect_text
-
-
 # configures logs and email notifications on server issues in production
 # if not app.debug:
-
-# EMAIL NOTIFICATIONS
+# EMAIL HANDLER CONFIG
 if app.config['MAIL_SERVER']:
-
     auth = None
     if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
         auth = (app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
@@ -65,18 +53,17 @@ if app.config['MAIL_SERVER']:
 
     mail_handler = SMTPHandler(
         mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
-        fromaddr='no-reply@' + app.config['MAIL_SERVER'],
-        toaddrs=app.config['ADMINS'], subject='Microblog Failure',
-        credentials=auth, secure=secure,
+        fromaddr=app.config['MAIL_USERNAME'], toaddrs=app.config['ADMINS'],
+        subject='Microblog Failure', credentials=auth, secure=secure,
     )
     mail_handler.setLevel(logging.ERROR)
     app.logger.addHandler(mail_handler)
 
-# LOGS -- INDENT TO USE FOR PROD ONLY
+# LOG HANDLER CONFIG -- INDENT TO USE FOR PROD ONLY
 if not os.path.exists('logs'):
     os.mkdir('logs')
 file_handler = RotatingFileHandler(
-    'logs/microblog.log',
+    Path().cwd().joinpath('logs').joinpath('microblog.log'),
     maxBytes=10240,
     backupCount=10,
 )
@@ -109,6 +96,17 @@ def before_request():
     g.locale = str(gl())
 
 
+import cli
+from email_utils import send_password_reset_email
+import errors
+from forms import (
+    LoginForm, RegistrationForm, EditProfileForm,
+    EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
+)
+from models import User, Post
+from translate import translate, detect_language
+
+
 @babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
@@ -120,7 +118,7 @@ def get_locale():
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        language = detect_text(form.post.data)
+        language = detect_language(form.post.data)
         if language == 'UNKNOWN' or len(language) > 5:
             language = ''
         post = Post(body=form.post.data, author=current_user, language=language)

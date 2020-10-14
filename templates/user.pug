@@ -1,7 +1,7 @@
 extends base.pug
 block app_content
-    table
-        tr(valign='top')
+    table(width='40%')
+        tr(valign='center')
             td: img(src=user.avatar(128))
             td
                 h1 {{ _('User: ') }} #{user.username}
