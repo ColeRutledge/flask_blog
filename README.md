@@ -1,4 +1,4 @@
-# microblog
+# flask_blog
 
 ## a flask crud project
 
