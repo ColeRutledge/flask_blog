@@ -1,6 +1,18 @@
 version: "3.8"
 
 services:
+    elastic:
+        container_name: elastic
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+        environment:
+          ELASTICSEARCH_URL: ${ELASTICSEARCH_URL}
+          discovery.type: single-node
+        ports:
+          - 9200:9200
+          - 9300:9300
+        networks:
+          - flask_blog
+
     flask:
         build: .
         container_name: flask_app
@@ -22,7 +34,7 @@ services:
         volumes:
             - .:/app
         networks:
-            redis_flask_app:
+            - flask_blog
         command: ["sh", "-c",
                   "pip install debugpy -t /tmp && \
                   python /tmp/debugpy \
@@ -30,5 +42,5 @@ services:
                   -m flask run --host 0.0.0.0 --port 5000"]
 
 networks:
-    redis_flask_app:
+    flask_blog:
         driver: bridge
