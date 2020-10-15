@@ -9,9 +9,16 @@ services:
             - 5000:5000
         restart: always
         environment:
-            FLASK_APP: app.py
-            FLASK_ENV: development
-            FLASK_RUN_HOST: 0.0.0.0
+            ADMINS: ${ADMINS}
+            FLASK_APP: ${FLASK_APP}
+            FLASK_ENV: ${FLASK_ENV}
+            MAIL_SERVER: ${MAIL_SERVER}
+            MAIL_PORT: ${MAIL_PORT}
+            MAIL_USE_TLS: ${MAIL_USE_TLS}
+            MAIL_USERNAME: ${MAIL_USERNAME}
+            MAIL_PASSWORD: ${MAIL_PASSWORD}
+            MS_TRANSLATOR_KEY: ${MS_TRANSLATOR_KEY}
+            # FLASK_RUN_HOST: 0.0.0.0
         volumes:
             - .:/app
         networks:

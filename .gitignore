@@ -134,3 +134,6 @@ app.db
 
 # logs
 logs/
+
+# test file
+scratch.ipynb

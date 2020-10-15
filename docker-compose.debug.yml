@@ -10,33 +10,24 @@ services:
             - 5678:5678
         restart: always
         environment:
-            FLASK_APP: app.py
-            FLASK_ENV: development
-            MAIL_SERVER: smtp.googlemail.com
-            MAIL_PORT: 587
-            MAIL_USE_TLS: 1
-            MAIL_USERNAME: example@example.com
-            MAIL_PASSWORD: 'password'
+            ADMINS: ${ADMINS}
+            FLASK_APP: ${FLASK_APP}
+            FLASK_ENV: ${FLASK_ENV}
+            MAIL_SERVER: ${MAIL_SERVER}
+            MAIL_PORT: ${MAIL_PORT}
+            MAIL_USE_TLS: ${MAIL_USE_TLS}
+            MAIL_USERNAME: ${MAIL_USERNAME}
+            MAIL_PASSWORD: ${MAIL_PASSWORD}
+            MS_TRANSLATOR_KEY: ${MS_TRANSLATOR_KEY}
         volumes:
             - .:/app
         networks:
             redis_flask_app:
-        command: [
-            "sh", "-c",
-            "pip install debugpy -t /tmp && \
-            python /tmp/debugpy \
-                --wait-for-client --listen 0.0.0.0:5678 \
-                -m flask run --host 0.0.0.0 --port 5000"
-        ]
-
-    redis:
-        image: redis
-        container_name: redis_cache
-        networks:
-            redis_flask_app:
-                aliases:
-                    - redis
-
+        command: ["sh", "-c",
+                  "pip install debugpy -t /tmp && \
+                  python /tmp/debugpy \
+                  --wait-for-client --listen 0.0.0.0:5678 \
+                  -m flask run --host 0.0.0.0 --port 5000"]
 
 networks:
     redis_flask_app:
