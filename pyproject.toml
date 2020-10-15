@@ -20,6 +20,7 @@ Flask-Moment = "^0.10.0"
 Flask-Babel = "^2.0.0"
 requests = "^2.24.0"
 python-dotenv = "^0.14.0"
+elasticsearch = "^7.9.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"

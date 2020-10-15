@@ -10,6 +10,7 @@ basedir = Path().cwd()
 class Config(object):
     LANGUAGES = ['en', 'es']
     POSTS_PER_PAGE = 15
+    ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
     MS_TRANSLATOR_KEY = os.environ.get('MS_TRANSLATOR_KEY')
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)

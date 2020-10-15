@@ -136,4 +136,4 @@ app.db
 logs/
 
 # test file
-scratch.ipynb
+flask_blog.ipynb

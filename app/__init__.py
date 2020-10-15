@@ -1,4 +1,5 @@
 from config import Config
+from elasticsearch import Elasticsearch
 from flask import Flask, request, current_app
 from flask_babel import Babel, lazy_gettext as _l
 from flask_bootstrap import Bootstrap
@@ -34,13 +35,16 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     db.init_app(app)
-    migrate.init_app(app)
+    migrate.init_app(app, db)
     login.init_app(app)
     mail.init_app(app)
     bootstrap.init_app(app)
     moment.init_app(app)
     babel.init_app(app)
     app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
+
+    es_url = app.config.get('ELASTICSEARCH_URL', None)
+    app.elasticsearch = Elasticsearch([es_url]) if es_url else None
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
