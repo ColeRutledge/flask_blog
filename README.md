@@ -17,7 +17,7 @@
         - both basic config & more advanced application factory pattern of configuring a flask app
         - wtforms and form validation
         - secure password recovery using flask-mail and json web tokens (pyjwt package)
-        - basics of testing with python built-in unittest
+        - basics of testing with python built-in unittest (i used pytest instead)
         - session management with flask-login
         - real-time time deltas on user posts with flask-moment (port of moment.js)
         - sqlalchemy orm, models, migrations, and sqlite
