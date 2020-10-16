@@ -1,6 +1,6 @@
 from app import db
 from app.main import bp
-from app.main.forms import PostForm, EmptyForm, EditProfileForm
+from app.main.forms import PostForm, EmptyForm, EditProfileForm, SearchForm
 from app.models import Post, User
 from app.translate import detect_language
 from datetime import datetime
@@ -13,11 +13,14 @@ from flask_login import current_user, login_required
 from app.translate import translate
 
 
-@bp.before_request
+@bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+        # 'g' is a container provided by flask that exists for the
+        #  lifetime of the request. it is specific to each request.
+        g.search_form = SearchForm()
     # using aliased get_locale from flask-babel
     g.locale = str(gl())
 
@@ -172,3 +175,26 @@ def translate_text():
             request.form['dest_language']
         )
     })
+
+
+@bp.route('/search')
+@login_required
+def search():
+    if not g.search_form.validate():
+        return redirect(url_for('main.explore'))
+
+    page = request.args.get('page', 1, type=int)
+    posts, total = Post.search(
+        g.search_form.q.data, page,
+        current_app.config['POSTS_PER_PAGE']
+    )
+    next_url = url_for('main.search', q=g.search_form.q.data, page=page + 1) \
+        if total > page * current_app.config['POSTS_PER_PAGE'] else None
+    prev_url = url_for('main.search', q=g.search_form.q.data, page=page - 1) \
+        if page > 1 else None
+
+    return render_template(
+        'search.pug',
+        title=_('Search'), posts=posts,
+        next_url=next_url, prev_url=prev_url
+    )

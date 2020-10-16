@@ -1,0 +1,11 @@
+extends base.pug
+block app_content
+    h1 {{ _('Search Results') }}
+    for post in posts
+        include _post.pug
+    nav(aria-label='...')
+        ul.pager
+            li(class={'previous': prev_url, 'hidden': not prev_url})
+                a(href=(prev_url or '#')) #[span(aria-hidden='true') &larr;] {{ _('Previous results') }}
+            li(class={'next': next_url, 'hidden': not next_url})
+                a(href=(next_url or '#')) {{ _('Next results') }} #[span(aria-hidden='true') &rarr;]

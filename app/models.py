@@ -100,9 +100,9 @@ class SearchableMixin(object):
     @classmethod
     def search(cls, expression, page, per_page):
         '''
-        wraps the query_index method from app.search. uses the results to query the rdb.
-        provides a way to connect model objects with the indexes in elastic and keeps
-        them in sync by using sqlalchemy events to listen for changes
+        class method: wraps the query_index method from app.search. uses the results
+        to query the rdb. provides a way to connect model objects with the indexes in
+        elastic and keeps them in sync by using sqlalchemy events to listen for changes.
 
         :param cls:         'class' -> refers to the model invoking this method. (e.g. - Post)
         :param expression:  the search query
@@ -112,7 +112,6 @@ class SearchableMixin(object):
         :returns:           tuple -> (lst(Post.id), int(num_results))
                             if no results found, will return empty db object and 0,
                             otherwise, will return a list of ids and the number of results
-
         '''
         ids, total = query_index(cls.__tablename__, expression, page, per_page)
         if total == 0:
@@ -125,9 +124,9 @@ class SearchableMixin(object):
     @classmethod
     def before_commit(cls, session):
         '''
-        sqlalchemy event will trigger this before all session commits. method will identify
-        objects in the session that need to be indexed in elastic search and copy them into the
-        _changes property on the session which allows for easy reaccess following commit
+        class method: sqlalchemy event will trigger this before all session commits. method will
+        identify objects in the session that need to be indexed in elastic search and copy them
+        into the _changes property on the session which allows for easy reaccess following commit.
 
         :param cls:         'class' -> refers to the model invoking this method (e.g. - Post)
         :param session:     the database session object
@@ -142,9 +141,9 @@ class SearchableMixin(object):
     @classmethod
     def after_commit(cls, session):
         '''
-        wraps the add_to_index method from app.search. sqlalchemy event will trigger this
-        after all session commits. method will loop over all session objects and add them
-        to an index in elastic search before resetting the session._changes property
+        class method: wraps the add_to_index method from app.search. sqlalchemy event will trigger
+        this after all session commits. method will loop over all session objects and add them
+        to an index in elastic search before resetting the session._changes property.
 
         :param cls:         'class' -> refers to the model invoking this method. (e.g. - Post)
         :param session:     the database session object
@@ -164,8 +163,9 @@ class SearchableMixin(object):
     @classmethod
     def reindex(cls):
         '''
-        wraps the add_to_index method from app.search. will reindex any model fields marked for
-        indexing in the sqlalchemy models. provides a way to reset the elastic search indexes.
+        class method: wraps the add_to_index method from app.search. will reindex any
+        model fields marked for indexing in the sqlalchemy models. provides a way to
+        reset the elastic search indexes.
 
         :param cls:         'class' -> refers to the model invoking this method. (e.g. - Post)
         :returns:
