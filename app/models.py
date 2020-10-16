@@ -96,7 +96,85 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
 
 
-class Post(db.Model):
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression, page, per_page):
+        '''
+        wraps the query_index method from app.search. uses the results to query the rdb.
+        provides a way to connect model objects with the indexes in elastic and keeps
+        them in sync by using sqlalchemy events to listen for changes
+
+        :param cls:         'class' -> refers to the model invoking this method. (e.g. - Post)
+        :param expression:  the search query
+        :param page:        refers to page number. used for returning the correct results based
+                            on pagination
+        :param per_page:    results per page to allow calculation for proper pagination results
+        :returns:           tuple -> (lst(Post.id), int(num_results))
+                            if no results found, will return empty db object and 0,
+                            otherwise, will return a list of ids and the number of results
+
+        '''
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(db.case(when, value=cls.id)), total
+
+    @classmethod
+    def before_commit(cls, session):
+        '''
+        sqlalchemy event will trigger this before all session commits. method will identify
+        objects in the session that need to be indexed in elastic search and copy them into the
+        _changes property on the session which allows for easy reaccess following commit
+
+        :param cls:         'class' -> refers to the model invoking this method (e.g. - Post)
+        :param session:     the database session object
+        :returns:
+        '''
+        session._changes = {
+            'add': list(session.new),
+            'update': list(session.dirty),
+            'delete': list(session.deleted),
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        '''
+        wraps the add_to_index method from app.search. sqlalchemy event will trigger this
+        after all session commits. method will loop over all session objects and add them
+        to an index in elastic search before resetting the session._changes property
+
+        :param cls:         'class' -> refers to the model invoking this method. (e.g. - Post)
+        :param session:     the database session object
+        :returns:
+        '''
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        '''
+        wraps the add_to_index method from app.search. will reindex any model fields marked for
+        indexing in the sqlalchemy models. provides a way to reset the elastic search indexes.
+
+        :param cls:         'class' -> refers to the model invoking this method. (e.g. - Post)
+        :returns:
+        '''
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+
+
+class Post(SearchableMixin, db.Model):
     __tablename__ = 'posts'
     __searchable__ = ['body']
 
@@ -113,44 +191,6 @@ class Post(db.Model):
 
     def __repr__(self):
         return f'<Post {self.body}>'
-
-
-class SearchableMixin(object):
-    @classmethod
-    def search(cls, expression, page, per_page):
-        ids, total = query_index(cls.__tablename__, expression, page, per_page)
-        if total == 0:
-            return cls.query.filter_by(id=0), 0
-        when = []
-        for i in range(len(ids)):
-            when.append((ids[i], i))
-        return cls.query.filter(cls.id.in_(ids)).order_by(db.case(when, value=cls.id)), total
-
-    @classmethod
-    def before_commit(cls, session):
-        session._changes = {
-            'add': list(session.new),
-            'update': list(session.dirty),
-            'delete': list(session.deleted),
-        }
-
-    @classmethod
-    def after_commit(cls, session):
-        for obj in session._changes['add']:
-            if isinstance(obj, SearchableMixin):
-                add_to_index(obj.__tablename__, obj)
-        for obj in session._changes['update']:
-            if isinstance(obj, SearchableMixin):
-                add_to_index(obj.__tablename__, obj)
-        for obj in session._changes['delete']:
-            if isinstance(obj, SearchableMixin):
-                remove_from_index(obj.__tablename__, obj)
-        session._changes = None
-
-    @classmethod
-    def reindex(cls):
-        for obj in cls.query:
-            add_to_index(cls.__tablename__, obj)
 
 
 db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
