@@ -135,5 +135,8 @@ app.db
 # logs
 logs/
 
+# launch config
+tasks.json
+
 # test file
 flask_blog.ipynb
