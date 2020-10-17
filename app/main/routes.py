@@ -2,15 +2,14 @@ from app import db
 from app.main import bp
 from app.main.forms import PostForm, EmptyForm, EditProfileForm, SearchForm
 from app.models import Post, User
-from app.translate import detect_language
+from app.translate import detect_language, translate
 from datetime import datetime
 from flask import (
     flash, redirect, g, jsonify, current_app,
     render_template, request, url_for,
 )
-from flask_babel import _, get_locale as gl
+from flask_babel import _, get_locale
 from flask_login import current_user, login_required
-from app.translate import translate
 
 
 @bp.before_app_request
@@ -21,8 +20,7 @@ def before_request():
         # 'g' is a container provided by flask that exists for the
         #  lifetime of the request. it is specific to each request.
         g.search_form = SearchForm()
-    # using aliased get_locale from flask-babel
-    g.locale = str(gl())
+    g.locale = str(get_locale())
 
 
 @bp.route('/', methods=['GET', 'POST'])

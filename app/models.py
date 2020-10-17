@@ -9,9 +9,9 @@ from time import time
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-# creates a self-referential many-to-many relationship
-# to link instances of the same class -> 'User'
-# no need to declare as model bc it is an auxiliary table
+# creates a self-referential many-to-many relationship to link
+# instances of the same class -> 'User' no need to declare
+# as model bc it is an auxiliary table and has no other use
 followers = db.Table(
     'followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
