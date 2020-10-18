@@ -1,12 +1,40 @@
 version: "3.8"
 
 services:
+    elastic:
+        container_name: elastic
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+        environment:
+            discovery.type: single-node
+        ports:
+            - 9200:9200
+            - 9300:9300
+        networks:
+            flask_blog:
+                aliases:
+                    - elastic
+
+    postgres:
+        container_name: postgres
+        image: postgres:12-alpine
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        volumes:
+            - postgres-db:/var/lib/postgresql/data
+        networks:
+            flask_blog:
+                aliases:
+                    - postgres
+
     flask:
         build: .
         container_name: flask_app
         image: flask_app
         ports:
             - 5000:5000
+            - 5678:5678 # here for debugging
         restart: always
         environment:
             ADMINS: ${ADMINS}
@@ -18,26 +46,34 @@ services:
             MAIL_USERNAME: ${MAIL_USERNAME}
             MAIL_PASSWORD: ${MAIL_PASSWORD}
             MS_TRANSLATOR_KEY: ${MS_TRANSLATOR_KEY}
+            DATABASE_URL: ${DATABASE_URL}
+            ELASTICSEARCH_URL: ${ELASTICSEARCH_URL}
             # FLASK_RUN_HOST: 0.0.0.0
         volumes:
             - .:/app
         networks:
-            redis_flask_app:
-        command: python -m flask run
+            flask_blog:
+        command: ["./boot.sh"]
+        # command: ["sh", "-c",
+        #             "pip install debugpy -t /tmp && \
+        #             python /tmp/debugpy \
+        #             --wait-for-client --listen 0.0.0.0:5678 \
+        #             -m flask run --host 0.0.0.0 --port 5000"]
 
-    redis:
-        image: redis
-        container_name: redis_cache
-        networks:
-            redis_flask_app:
-                aliases:
-                    - redis
+#     redis:
+#         image: redis
+#         container_name: redis_cache
+#         networks:
+#             flask_blog:
+#                 aliases:
+#                     - redis
 #         volumes:
 #             - redis-cache:/var/lib/redis/data
 
-# volumes:
-#     redis-cache:
+volumes:
+    postgres-db:
+    # redis-cache:
 
 networks:
-    redis_flask_app:
+    flask_blog:
         driver: bridge

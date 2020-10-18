@@ -39,22 +39,23 @@
 
 ##### Pip Docker-Compose w/ VSCode Debugger #####
 
-FROM python:3.8
+# FROM python:3.8
 
-ENV PIP_DISABLE_PIP_VERSION_CHECK=on
+# ENV PIP_DISABLE_PIP_VERSION_CHECK=on
 
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE 1
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED 1
+# # Keeps Python from generating .pyc files in the container
+# ENV PYTHONDONTWRITEBYTECODE 1
+# # Turns off buffering for easier container logging
+# ENV PYTHONUNBUFFERED 1
 
-EXPOSE 5000
+# EXPOSE 5000
 
-WORKDIR /app
-# ADD . /app
+# WORKDIR /app
+# # ADD . /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# COPY requirements.txt .
+# RUN pip install --no-cache-dir -r requirements.txt
+# COPY . .
 
 # Switches to a non-root user and changes the ownership of the /app folder"
 # RUN useradd appuser && chown -R appuser /app
@@ -88,3 +89,55 @@ RUN pip install --no-cache-dir -r requirements.txt
 # COPY . /app
 
 # CMD [ "poetry", "run", "flask", "run", "--host=0.0.0.0" ]
+
+
+
+##### Microblog production build #####
+
+# FROM python:3.8-alpine
+
+# RUN adduser -D flask_blog
+
+# WORKDIR /home/flask_blog
+
+# COPY requirements.txt requirements.txt
+# RUN python -m venv venv
+# RUN venv/bin/pip install -r requirements.txt
+# RUN venv/bin/pip install gunicorn
+
+# COPY app app
+# COPY migrations migrations
+# COPY flask_blog.py config.py boot.sh ./
+# RUN chmod +x boot.sh
+
+# ENV FLASK_APP flask_blog.py
+# RUN chown -R flask_blog:flask_blog ./
+# USER flask_blog
+
+# EXPOSE 5000
+
+# ENTRYPOINT [ "./boot.sh" ]
+
+
+##### Flask_Blog Prod #####
+
+FROM python:3.8
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=on
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE 1
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED 1
+
+EXPOSE 5000
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install gunicorn
+
+COPY app app
+COPY migrations migrations
+COPY flask_blog.py config.py boot.sh ./
+RUN chmod +x boot.sh

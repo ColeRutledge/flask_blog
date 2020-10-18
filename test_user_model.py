@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    ELASTICSEARCH_URL = 'http://localhost:9200'
     # will have sqlite use an in-memory db for testing
 
 
