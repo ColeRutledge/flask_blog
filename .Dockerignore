@@ -4,6 +4,9 @@ pyproject.toml
 sqlite_queries.sql
 docker-compose*
 Dockerfile*
+-- SQLite.sql
+.vscode
+.pytest_cache
 
 **/__pycache__
 **/.classpath
