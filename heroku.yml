@@ -18,5 +18,5 @@ build:
       flask_app: Dockerfile
       elastic: elastic.Dockerfile
 run:
-    flask_app: boot.sh
+    flask_app: ./boot.sh
     elastic: -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"
