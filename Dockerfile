@@ -121,7 +121,8 @@
 
 ##### Flask_Blog Prod #####
 
-FROM python:3.8
+FROM python:3.9-slim
+# FROM python:3.8
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=on
 # Keeps Python from generating .pyc files in the container

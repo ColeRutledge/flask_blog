@@ -1,0 +1,22 @@
+setup:
+    addons:
+      - plan: heroku-postgresql
+        as: DATABASE
+    config:
+        ADMINS: ${ADMINS}
+        FLASK_APP: ${FLASK_APP}
+        FLASK_ENV: ${FLASK_ENV}
+        MAIL_SERVER: ${MAIL_SERVER}
+        MAIL_PORT: ${MAIL_PORT}
+        MAIL_USE_TLS: ${MAIL_USE_TLS}
+        MAIL_USERNAME: ${MAIL_USERNAME}
+        MAIL_PASSWORD: ${MAIL_PASSWORD}
+        MS_TRANSLATOR_KEY: ${MS_TRANSLATOR_KEY}
+        ELASTICSEARCH_URL: ${ELASTICSEARCH_URL}
+build:
+    docker:
+      flask_app: Dockerfile
+      elastic: elastic.Dockerfile
+run:
+    flask_app: boot.sh
+    elastic: -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"
