@@ -17,14 +17,9 @@ services:
                 aliases:
                     - elastic
 
-
     postgres:
         container_name: postgres
         image: postgres:12-alpine
-        environment:
-            POSTGRES_USER: ${POSTGRES_USER}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            POSTGRES_DB: ${POSTGRES_DB}
         volumes:
             - postgres-db:/var/lib/postgresql/data
         networks:
@@ -40,23 +35,12 @@ services:
             - 5000:5000
             - 5678:5678 # here for debugging
         restart: always
-        environment:
-            ADMINS: ${ADMINS}
-            FLASK_APP: ${FLASK_APP}
-            FLASK_ENV: ${FLASK_ENV}
-            MAIL_SERVER: ${MAIL_SERVER}
-            MAIL_PORT: ${MAIL_PORT}
-            MAIL_USE_TLS: ${MAIL_USE_TLS}
-            MAIL_USERNAME: ${MAIL_USERNAME}
-            MAIL_PASSWORD: ${MAIL_PASSWORD}
-            MS_TRANSLATOR_KEY: ${MS_TRANSLATOR_KEY}
-            DATABASE_URL: ${DATABASE_URL}
-            ELASTICSEARCH_URL: ${ELASTICSEARCH_URL}
+        env_file: .env
         volumes:
             - .:/app
         networks:
             flask_blog:
-        command: ["./boot.sh"]
+        command: ./boot.sh
 
 #     redis:
 #         image: redis
