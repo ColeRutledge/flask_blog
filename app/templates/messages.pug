@@ -1,0 +1,13 @@
+extends base.pug
+block app_content
+    h1 {{ _('Messages') }}
+    br
+    for post in messages
+        include _post.pug
+
+    nav(aria-label='...')
+        ul.pager
+            li(class={'previous': prev_url, 'hidden': not prev_url})
+                a(href=(prev_url or '#')) #[span(aria-hidden='true') &larr;] {{ _('Newer messages') }}
+            li(class={'next': next_url, 'hidden': not next_url})
+                a(href=(next_url or '#')) {{ _('Older messages') }} #[span(aria-hidden='true') &rarr;]

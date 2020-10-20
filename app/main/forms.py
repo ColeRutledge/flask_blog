@@ -20,6 +20,15 @@ class PostForm(FlaskForm):
     submit = SubmitField(_l('Submit'))
 
 
+# handles messages between users
+class MessageForm(FlaskForm):
+    message = TextAreaField(
+        _l('Message'),
+        validators=[DataRequired(), Length(min=0, max=140)]
+    )
+    submit = SubmitField(_l('Submit'))
+
+
 class EditProfileForm(FlaskForm):
     username = StringField(_l('Username'), validators=[DataRequired()])
     about_me = TextAreaField(_l('About me'), validators=[Length(min=0, max=140)])
