@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    last_message_read_time = db.Column(db.DateTime)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(
         db.DateTime,
@@ -37,10 +38,21 @@ class User(UserMixin, db.Model):
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     followed = db.relationship(
-        'User', secondary=followers, lazy='dynamic',
+        'User',
+        secondary=followers, lazy='dynamic',
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'),
+    )
+    messages_sent = db.relationship(
+        'Message',
+        backref='author', lazy='dynamic',
+        foreign_keys='Message.sender_id',
+    )
+    messages_received = db.relationship(
+        'Message',
+        backref='recipient', lazy='dynamic',
+        foreign_keys='Message.recipient_id',
     )
 
     def __repr__(self):
@@ -80,6 +92,12 @@ class User(UserMixin, db.Model):
                            current_app.config['SECRET_KEY'],
                            algorithm='HS256')
                    .decode('utf-8'))
+
+    def new_messages(self):
+        last_read_time = self.last_message_read_time or datetime(1900, 1, 1)
+        return (Message.query.filter_by(recipient=self)
+                             .filter(Message.timestamp > last_read_time)
+                             .count())
 
     @login.user_loader
     def load_user(id):
@@ -191,6 +209,19 @@ class Post(SearchableMixin, db.Model):
 
     def __repr__(self):
         return f'<Post {self.body}>'
+
+
+class Message(db.Model):
+    __tablename__ = 'messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Message {self.body}>'
 
 
 db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
