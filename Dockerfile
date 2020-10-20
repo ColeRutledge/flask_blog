@@ -1,3 +1,27 @@
+##### Flask_Blog Prod #####
+
+FROM python:3.9-slim
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=ON \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install gunicorn
+
+COPY app app \
+     migrations migrations \
+     flask_blog.py config.py boot.sh ./
+
+RUN chmod +x boot.sh
+
+EXPOSE 5000
+
+
 ##### Pip Docker-Compose #####
 
 # FROM python:3.8
@@ -117,28 +141,3 @@
 # EXPOSE 5000
 
 # ENTRYPOINT [ "./boot.sh" ]
-
-
-##### Flask_Blog Prod #####
-
-FROM python:3.9-slim
-# FROM python:3.8
-
-ENV PIP_DISABLE_PIP_VERSION_CHECK=on
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE 1
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED 1
-
-EXPOSE 5000
-
-WORKDIR /app
-
-COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install gunicorn
-
-COPY app app
-COPY migrations migrations
-COPY flask_blog.py config.py boot.sh ./
-RUN chmod +x boot.sh

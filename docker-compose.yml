@@ -7,11 +7,6 @@ services:
             context: .
             dockerfile: elastic.Dockerfile
         image: elastic
-        environment:
-            discovery.type: single-node
-        ports:
-            - 9200:9200
-            - 9300:9300
         networks:
             flask_blog:
                 aliases:
@@ -42,15 +37,15 @@ services:
             flask_blog:
         command: ./boot.sh
 
-#     redis:
-#         image: redis
-#         container_name: redis_cache
-#         networks:
-#             flask_blog:
-#                 aliases:
-#                     - redis
-#         volumes:
-#             - redis-cache:/var/lib/redis/data
+    # redis:
+    #     image: redis
+    #     container_name: redis_cache
+    #     networks:
+    #         flask_blog:
+    #             aliases:
+    #                 - redis
+    #     volumes:
+    #         - redis-cache:/var/lib/redis/data
 
 volumes:
     postgres-db:
