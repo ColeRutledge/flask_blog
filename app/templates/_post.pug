@@ -6,7 +6,8 @@ table.table.table-hover
 
         td
             {% set user_link %}
-            #[a(href=url_for('main.user', username=post.author.username)) #{post.author.username}]
+            span.user_popup
+                #[a(href=url_for('main.user', username=post.author.username)) #{post.author.username}]
             {% endset %}
             {{ _('%(username)s said %(when)s:', username=user_link, when=moment(post.timestamp).fromNow()) }}
             div: span(id='post{{ post.id }}') #{post.body}
