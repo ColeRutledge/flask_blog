@@ -5,7 +5,7 @@ block scripts
     {{ super() }}
     {{ moment.include_moment() }}
     {{ moment.lang(g.locale) }}
-    script(src=url_for('static', filename='popup.js'))
+    script(src=url_for('static', filename='src.js'))
 
 
 block title
@@ -37,6 +37,10 @@ block navbar
                         li: a(href=url_for('auth.login')) {{ _('Login') }}
                     else
                         li: a(href=url_for('main.messages')) {{ _('Messages') }}
+                            new_messages = current_user.new_messages()
+                            if new_messages
+                                span.badge(id='message_count' style='margin-left: 5px;') #{new_messages if new_messages else None}
+                                //- span.badge(style='margin-left: 5px;visibility: ') #{new_messages}
                         li: a(href=url_for('main.user', username=current_user.username)) {{ _('Profile') }}
                         li: a(href=url_for('auth.logout')) {{ _('Logout') }}
 
