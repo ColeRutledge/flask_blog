@@ -24,8 +24,8 @@ services:
 
     flask:
         build: .
-        container_name: flask_app
         image: flask_app
+        container_name: flask_app
         ports:
             - 5000:5000
             - 5678:5678 # here for debugging
@@ -48,6 +48,20 @@ services:
                     - redis
         volumes:
             - redis-cache:/var/lib/redis/data
+
+    rq_worker:
+        build: .
+        image: flask_app
+        container_name: rq_worker
+        env_file: .env
+        depends_on:
+            - redis
+        networks:
+            flask_blog:
+                aliases:
+                    - rq_worker
+        entrypoint: rq
+        command: worker -u ${REDIS_URL} flask_blog-tasks
 
 volumes:
     postgres-db:

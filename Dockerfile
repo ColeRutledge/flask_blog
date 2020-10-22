@@ -13,9 +13,9 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install gunicorn
 
-COPY app app \
-     migrations migrations \
-     flask_blog.py config.py boot.sh ./
+COPY ./app /app/app
+COPY ./migrations /app/migrations
+COPY flask_blog.py config.py boot.sh ./
 
 RUN chmod +x boot.sh
 

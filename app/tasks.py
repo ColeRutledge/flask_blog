@@ -59,8 +59,8 @@ def export_posts(user_id):
         # handle unexpected errors
         app.logger.error('Unhandled exception', exc_info=sys.exc_info())
     finally:
-        _set_task_progress(100)
         # handle cleanup
+        _set_task_progress(100)
 
 
 # def example(seconds):
