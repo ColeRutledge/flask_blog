@@ -14,6 +14,8 @@ block app_content
                     p: a(href=url_for('main.send_message', recipient=user.username)) {{ _('Send private message') }}
                 if user == current_user
                     p: a(href=url_for('main.edit_profile')) {{ _('Edit your profile') }}
+                    if not current_user.get_task_in_progress('export_posts')
+                        p: a(href=url_for('main.export_posts')) {{ _('Export your posts') }}
                 elif not current_user.is_following(user)
                     form(action=url_for('main.follow', username=user.username), method='post')
                         =form.hidden_tag()
