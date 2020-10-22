@@ -222,10 +222,7 @@ def send_message(recipient):
             body=form.message.data,
         )
         db.session.add(msg)
-
-        # for testing notifications
         user.add_notification('unread_message_count', user.new_messages())
-
         db.session.commit()
         flash(_('Your message has been sent.'))
         return redirect(url_for('main.user', username=recipient))
@@ -241,10 +238,7 @@ def send_message(recipient):
 @login_required
 def messages():
     current_user.last_message_read_time = datetime.utcnow()
-
-    # for testing user notifications
     current_user.add_notification('unread_message_count', 0)
-
     db.session.commit()
 
     page = request.args.get('page', 1, type=int)

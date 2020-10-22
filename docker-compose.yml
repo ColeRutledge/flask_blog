@@ -37,19 +37,22 @@ services:
             flask_blog:
         command: ./boot.sh
 
-    # redis:
-    #     image: redis
-    #     container_name: redis_cache
-    #     networks:
-    #         flask_blog:
-    #             aliases:
-    #                 - redis
-    #     volumes:
-    #         - redis-cache:/var/lib/redis/data
+    redis:
+        image: redis
+        container_name: redis
+        # container_name: redis_cache
+        ports:
+            - 6379:6379
+        networks:
+            flask_blog:
+                aliases:
+                    - redis
+        volumes:
+            - redis-cache:/var/lib/redis/data
 
 volumes:
     postgres-db:
-    # redis-cache:
+    redis-cache:
 
 networks:
     flask_blog:
