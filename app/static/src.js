@@ -1,15 +1,39 @@
-window.addEventListener('DOMContentLoaded', () => {
+const set_message_count = n => {
+    $('#message_count').text(n)
+    $('#message_count').css('visibility', n ? 'visible' : 'hidden')
+}
 
-    function translate(sourceElem, destElem, sourceLang, destLang) {
-        $(destElem).html(`<img src="{{ url_for('static', filename='loading.gif') }}">`)
-        $.post('/translate', {
-            text: $(sourceElem).text(),
-            source_language: sourceLang,
-            dest_language: destLang
-        }).done(function(response) {
-            $(destElem).text(response['text'])
-        }).fail(function() {
-            $(destElem).text("{{ _('Error: Could not contact server.') }}")
+
+function translate(sourceElem, destElem, sourceLang, destLang) {
+    $(destElem).html(`<img src="{{ url_for('static', filename='loading.gif') }}">`)
+    $.post('/translate', {
+        text: $(sourceElem).text(),
+        source_language: sourceLang,
+        dest_language: destLang
+    }).done(function(response) {
+        $(destElem).text(response['text'])
+    }).fail(function() {
+        $(destElem).text("{{ _('Error: Could not contact server.') }}")
+    })
+}
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    if (auth) {
+        $(function() {
+            var since = 0
+            setInterval(function() {
+                $.ajax(`${url}?since=${since}`).done(
+                    function(notifications) {
+                        for (var i = 0; i < notifications.length; i++) {
+                            if (notifications[i].name == 'unread_message_count') {
+                                set_message_count(notifications[i].data)
+                            }
+                            since = notifications[i].timestamp
+                        }
+                    }
+                )
+            }, 10000)
         })
     }
 
@@ -58,10 +82,4 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         )
     })
-
-    const set_message_count = n => {
-        $('#message_count').text(n)
-        $('#message_count').css('visibility', n ? 'visible' : 'hidden')
-    }
-
 })

@@ -1,5 +1,5 @@
 from app import create_app, db, cli, login, mail, moment
-from app.models import User, Post
+from app.models import User, Post, Notification, Message
 
 
 app = create_app()
@@ -13,4 +13,5 @@ def make_shell_context():
     running 'flask shell' from inside the venv command line
     '''
     return {'db': db, 'User': User, 'Post': Post,
-            'login': login, 'mail': mail, 'moment': moment}
+            'login': login, 'mail': mail, 'moment': moment,
+            'Message': Message, 'Notification': Notification}

@@ -1,7 +1,6 @@
 extends base.pug
 {% import 'bootstrap/wtf.html' as wtf %}
 block app_content
-    //- h1 Hello World! I have been seen #{count} times.
     h1 {{ _('Hello, %(username)s!', username=current_user.username) }}
     if form
         .row

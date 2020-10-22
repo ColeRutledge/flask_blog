@@ -101,6 +101,12 @@ class User(UserMixin, db.Model):
                              .filter(Message.timestamp > last_read_time)
                              .count())
 
+    def add_notification(self, name, data):
+        self.notifications.filter_by(name=name).delete()
+        n = Notification(name=name, payload_json=json.dumps(data), user=self)
+        db.session.add(n)
+        return n
+
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))
