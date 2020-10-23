@@ -56,6 +56,11 @@ block content
             ul
             each message in messages
                 div(class='alert alert-info' role='alert') {{ _('%(message)s', message=message) }}
+        if current_user.is_authenticated
+            tasks = current_user.get_tasks_in_progress()
+            if tasks
+                for task in tasks
+                    div(class='alert alert-success' role='alert') #{task.description} #[span(id=(task.id + '-progress')) #{task.get_progress()}%]
         block app_content
 
 

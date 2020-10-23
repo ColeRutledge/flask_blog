@@ -18,6 +18,9 @@ function translate(sourceElem, destElem, sourceLang, destLang) {
 }
 
 
+const set_task_progress = (task_id, progress) => $(`#${task_id}-progress`).text(`${progress}%`)
+
+
 window.addEventListener('DOMContentLoaded', () => {
     if (auth) {
         $(function() {
@@ -26,9 +29,20 @@ window.addEventListener('DOMContentLoaded', () => {
                 $.ajax(`${url}?since=${since}`).done(
                     function(notifications) {
                         for (var i = 0; i < notifications.length; i++) {
-                            if (notifications[i].name == 'unread_message_count') {
-                                set_message_count(notifications[i].data)
+                            switch (notifications[i].name) {
+                                case 'unread_message_count':
+                                    set_message_count(notifications[i].data)
+                                    break
+                                case 'task_progress':
+                                    set_task_progress(
+                                        notifications[i].data.task_id,
+                                        notifications[i].data.progress
+                                    )
+                                    break
                             }
+                            // if (notifications[i].name == 'unread_message_count') {
+                            //     set_message_count(notifications[i].data)
+                            // }
                             since = notifications[i].timestamp
                         }
                     }

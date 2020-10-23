@@ -39,8 +39,9 @@ def send_email(subject, sender, recipients, text_body,
     )
     if attachments:
         for attachment in attachments:
-            # attach method of the message class accepts three
-            # args: filename, media type, and actual file data
+            # attach method of the message class accepts three args:
+            # filename, media type, and actual file data. we are
+            # splatting a tuple of args from a list of tuples here.
             msg.attach(*attachment)
     if sync:
         mail.send(msg)
