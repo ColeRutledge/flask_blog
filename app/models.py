@@ -1,7 +1,7 @@
 from app import db, login
 from app.search import add_to_index, remove_from_index, query_index
 from datetime import datetime
-from flask import current_app
+from flask import current_app, url_for
 from flask_login import UserMixin
 from hashlib import md5
 import json
@@ -38,7 +38,6 @@ class User(UserMixin, db.Model):
         server_default=db.func.now(),
         server_onupdate=db.func.now()
     )
-
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     notifications = db.relationship('Notification', backref='user', lazy='dynamic')
     tasks = db.relationship('Task', backref='user', lazy='dynamic')
@@ -68,6 +67,33 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def to_dict(self, include_email=False):
+        data = {
+            'id': self.id,
+            'username': self.username,
+            'last_seen': self.last_seen.isoformat() + 'Z',
+            'about_me': self.about_me,
+            'post_count': self.posts.count(),
+            'follower_count': self.followers.count(),
+            'followed_count': self.followed.count(),
+            '_links': {
+                'self': url_for('api.get_user', id=self.id),
+                'followers': url_for('api.get_followers', id=self.id),
+                'followed': url_for('api.get_followed', id=self.id),
+                'avatar': self.avatar(128),
+            }
+        }
+        if include_email:
+            data['email'] = self.email
+        return data
+
+    def from_dict(self, data, new_user=False):
+        for field in ['username', 'email', 'about_me']:
+            if field in data:
+                setattr(self, field, data[field])
+            if new_user and 'password' in data:
+                self.set_password(data['password'])
 
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
