@@ -119,7 +119,7 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
         user = User.query.filter_by(token=token).first()
         if user is None or user.token_expiration < datetime.utcnow():
             return None
-        return User
+        return user
 
     def to_dict(self, include_email=False):
         data = {

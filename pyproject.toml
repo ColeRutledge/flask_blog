@@ -23,6 +23,7 @@ python-dotenv = "^0.14.0"
 elasticsearch = "^7.9.1"
 psycopg2-binary = "^2.8.6"
 rq = "^1.5.2"
+Flask-HTTPAuth = "^4.1.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"
