@@ -8,6 +8,7 @@ block scripts
     script(type='text/javascript').
         let auth = {{ current_user.is_authenticated|tojson }}
         let url = {{ url_for('main.notifications')|tojson }}
+        let static = {{ url_for('static', filename='loading.gif')|tojson }}
     script(src=url_for('static', filename='src.js'))
 
 

@@ -5,7 +5,7 @@ const set_message_count = n => {
 
 
 function translate(sourceElem, destElem, sourceLang, destLang) {
-    $(destElem).html(`<img src="{{ url_for('static', filename='loading.gif') }}">`)
+    $(destElem).html(`<img src=${static}>`)
     $.post('/translate', {
         text: $(sourceElem).text(),
         source_language: sourceLang,
