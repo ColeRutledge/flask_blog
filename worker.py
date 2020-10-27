@@ -11,7 +11,7 @@ redis_url = os.getenv('REDISTOGO_URL')
 if not redis_url:
     raise RuntimeError('Set up Redis To Go first.')
 
-url = urlparse.urlparse(redis_url)
+url = urlparse(redis_url)
 urlparse.uses_netloc.append('redis')
 
 # conn = redis.from_url(redis_url)
@@ -24,16 +24,16 @@ if __name__ == '__main__':
         worker.work()
 
 
-    # rq_worker:
-    #     build: .
-    #     image: flask_app
-    #     container_name: rq_worker
-    #     env_file: .env
-    #     depends_on:
-    #         - redis
-    #     networks:
-    #         flask_blog:
-    #             aliases:
-    #                 - rq_worker
-    #     entrypoint: rq
-    #     command: worker -u ${REDIS_URL} flask_blog-tasks
+# rq_worker:
+#     build: .
+#     image: flask_app
+#     container_name: rq_worker
+#     env_file: .env
+#     depends_on:
+#         - redis
+#     networks:
+#         flask_blog:
+#             aliases:
+#                 - rq_worker
+#     entrypoint: rq
+#     command: worker -u ${REDIS_URL} flask_blog-tasks
