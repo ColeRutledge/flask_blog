@@ -12,8 +12,8 @@ from logging.handlers import SMTPHandler, RotatingFileHandler
 import logging
 from pathlib import Path
 import os
-from redis import Redis
-import rq
+# from redis import Redis
+# import rq
 
 
 db = SQLAlchemy()
@@ -48,8 +48,8 @@ def create_app(config_class=Config):
     es_url = app.config.get('ELASTICSEARCH_URL', None)
     app.elasticsearch = Elasticsearch([es_url]) if es_url else None
 
-    app.redis = Redis.from_url(app.config['REDIS_URL'])
-    app.task_queue = rq.Queue('flask_blog-tasks', connection=app.redis)
+    # app.redis = Redis.from_url(app.config['REDIS_URL'])
+    # app.task_queue = rq.Queue('flask_blog-tasks', connection=app.redis)
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
