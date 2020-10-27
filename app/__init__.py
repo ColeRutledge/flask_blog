@@ -49,8 +49,10 @@ def create_app(config_class=Config):
     app.elasticsearch = Elasticsearch([es_url]) if es_url else None
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
+    app.task_queue = rq.Queue('flask_blog-tasks', connection=app.redis)
+
     rq_url = app.config.get('REDISTOGO_URL', app.redis)
-    app.task_queue = rq.Queue('flask_blog-tasks', connection=rq_url)
+    app.task_queue = rq.Queue('flask_blog-tasks', connection=Redis.from_url(rq_url))
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
