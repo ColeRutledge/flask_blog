@@ -1,8 +1,26 @@
 build:
     docker:
       web: Dockerfile
+      worker: Dockerfile
 run:
     web: ./boot.sh
+    worker:
+        entrypoint: rq
+        command: worker -u ${REDIS_URL} flask_blog-tasks
+
+    # rq_worker:
+    #     build: .
+    #     image: flask_app
+    #     container_name: rq_worker
+    #     env_file: .env
+    #     depends_on:
+    #         - redis
+    #     networks:
+    #         flask_blog:
+    #             aliases:
+    #                 - rq_worker
+    #     entrypoint: rq
+    #     command: worker -u ${REDIS_URL} flask_blog-tasks
 
 # setup:
 #     addons:
