@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 
 COPY ./app /app/app
 COPY ./migrations /app/migrations
-COPY flask_blog.py config.py boot.sh ./
+COPY flask_blog.py config.py worker.py boot.sh ./
 
 RUN chmod +x boot.sh
 

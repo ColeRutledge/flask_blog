@@ -1,9 +1,9 @@
 build:
     docker:
       web: Dockerfile
-      worker: worker.Dockerfile
 run:
     web: ./boot.sh
+    worker: python worker.py
     # worker:
     #     entrypoint: rq
     #     command: worker -u ${REDIS_URL} flask_blog-tasks
