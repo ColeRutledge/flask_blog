@@ -8,9 +8,7 @@ run:
         image: web
         command:
             - python -u worker.py
-    # worker:
-    #     image: web
-    #     command: worker -u ${REDIS_URL} flask_blog-tasks
+
 
 # setup:
 #     addons:

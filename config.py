@@ -11,7 +11,7 @@ class Config(object):
     LANGUAGES = ['en', 'es']
     POSTS_PER_PAGE = 15
     REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'
-    REDISTOGO_URL = os.environ.get('REDISTOGO_URL')
+    REDISTOGO_URL = os.environ.get('REDISTOGO_URL') or REDIS_URL
     ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
     MS_TRANSLATOR_KEY = os.environ.get('MS_TRANSLATOR_KEY')
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
