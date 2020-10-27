@@ -1,12 +1,33 @@
 build:
     docker:
       web: Dockerfile
-      worker: python worker.py
+
 run:
     web: ./boot.sh
+    worker:
+        image: web
+        command:
+            - python worker.py
     # worker:
     #     entrypoint: rq
     #     command: worker -u ${REDIS_URL} flask_blog-tasks
+
+
+
+# setup:
+#     addons:
+#       - plan: heroku-postgresql
+#         as: DATABASE
+# build:
+#     docker:
+#         web: Dockerfile
+#         elastic: elastic.Dockerfile
+# run:
+#     web: ./boot.sh
+#     elastic: -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"
+
+
+
 
     # rq_worker:
     #     build: .
@@ -21,15 +42,3 @@ run:
     #                 - rq_worker
     #     entrypoint: rq
     #     command: worker -u ${REDIS_URL} flask_blog-tasks
-
-# setup:
-#     addons:
-#       - plan: heroku-postgresql
-#         as: DATABASE
-# build:
-#     docker:
-#         web: Dockerfile
-#         elastic: elastic.Dockerfile
-# run:
-#     web: ./boot.sh
-#     elastic: -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"
