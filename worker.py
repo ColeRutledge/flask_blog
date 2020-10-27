@@ -5,7 +5,8 @@ from rq.worker import HerokuWorker as Worker
 from urllib.parse import urlparse
 
 
-listen = ['high', 'default', 'low']
+# listen = ['high', 'default', 'low']
+listen = ['flask_blog-tasks']
 
 redis_url = os.getenv('REDISTOGO_URL')
 if not redis_url:
