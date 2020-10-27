@@ -7,7 +7,7 @@ run:
     worker:
         image: web
         command:
-            - python worker.py
+            - python -u worker.py
     # worker:
     #     entrypoint: rq
     #     command: worker -u ${REDIS_URL} flask_blog-tasks
