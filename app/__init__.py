@@ -16,15 +16,15 @@ from redis import Redis
 import rq
 
 
-db = SQLAlchemy()
-migrate = Migrate()
 babel = Babel()
-mail = Mail()
-moment = Moment()
+bootstrap = Bootstrap()
+db = SQLAlchemy()
 login = LoginManager()
 login.login_view = 'auth.login'
 login.login_message = _l('Please log in to access this page.')
-bootstrap = Bootstrap()
+mail = Mail()
+migrate = Migrate()
+moment = Moment()
 
 
 @babel.localeselector
